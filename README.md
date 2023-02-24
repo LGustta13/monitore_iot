@@ -22,6 +22,7 @@
 - [FUNCIONAMENTO](#Funcionamento)
 - [OBSERVAÇÕES](#Inicio)
 - [GITHUB](#Github)
+- [CHECKLIST](#Checklist)
 
 <br>
 
@@ -43,3 +44,8 @@ Arquivo ESP32 principal: na pasta "main"
 
 ## Github
 Token: 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
+
+<br>
+
+<div id="Checklist"/>
+- [] Pensei em testar o código HttpsClient_v2, presente em ABC/Estudos/GSM GPRS/Outros
