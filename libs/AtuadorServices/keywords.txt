@@ -1,0 +1,23 @@
+#######################################
+# Syntax Coloring Map WireSlave
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+AtuadorServices KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setupAtuadores  KEYWORD2
+atuarNoReleDeBloqueioZero   KEYWORD2
+atuarNoReleDeBloqueioUm KEYWORD2
+atuarNoBuzzer   KEYWORD2
+atuarNoLedVermelho  KEYWORD2
+atuarNoLedAzul  KEYWORD2
+atuarNoLedVerde KEYWORD2
+receberPulsosDoGatilhoZero  KEYWORD2
+receberPulsosDoGatilhoUm    KEYWORD2
