@@ -52,4 +52,5 @@ Token: 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
 ## Checklist
 - [ ] Pensei em testar o código HttpsClient_v2, presente em ABC/Estudos/GSM GPRS/Outros
 - [ ] Ideia de utilizar FreeRTOS para uso de uma tarefa que realiza o abastecimento e outra que exporta dados para o servidor
-- [ ] Armazenamento de arquivos, ideia de utilizar o SPIFFS https://blog.eletrogate.com/spiffs-armazenamento-de-arquivos-do-esp32/
+- [ ] Armazenamento de arquivos, ideia de utilizar o SPIFFS https://blog.eletrogate.com/spiffs-armazenamento-de-arquivos-do-esp32/ ou o módulo para cartão de memória
+- [ ] Interface em React ou BI
