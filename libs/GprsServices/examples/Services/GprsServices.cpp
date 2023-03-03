@@ -16,7 +16,7 @@ void GprsServices::setupGprs(void)
   Serial2.begin(115200);
 }
 
-void updateDadosDaSerial(void)
+void GprsServices::updateDadosDaSerial(void)
 {
   if (Serial2.available()) {
     Serial.write(Serial2.read());
@@ -25,3 +25,5 @@ void updateDadosDaSerial(void)
     Serial2.write(Serial.read());
   }
 }
+
+void 

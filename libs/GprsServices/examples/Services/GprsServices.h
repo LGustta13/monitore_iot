@@ -29,6 +29,10 @@ public:
    */
   void updateDadosDaSerial(void);
 
+
+private:
+  
+
 };
 
 #endif
