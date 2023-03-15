@@ -21,3 +21,12 @@ atuarNoLedAzul  KEYWORD2
 atuarNoLedVerde KEYWORD2
 receberPulsosDoGatilhoZero  KEYWORD2
 receberPulsosDoGatilhoUm    KEYWORD2
+reiniciarArduino    KEYWORD2
+reiniciarEsp32  KEYWORD2
+contagemDosPulsosSensor0    KEYWORD2
+contagemDosPulsosSensor1    KEYWORD2
+subrotinaDoSensor0  KEYWORD2
+subrotinaDoSensor1  KEYWORD2
+getPulsosDaBombaPorParalelismo  KEYWORD2
+getPulsosDaBombaPorInterrupcao  KEYWORD2
+realizarAbastecimento   KEYWORD2

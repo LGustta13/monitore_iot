@@ -84,6 +84,12 @@ public:
    */
   int receberPulsosDoGatilhoUm(void);
 
+  /** Função que reinicia o Arduino
+   * @param - void
+   * @return - void
+   */
+  void reiniciarArduino(void);
+
   /** Função que reinicia o Esp32
    * @param - void
    * @return - void
@@ -106,13 +112,13 @@ public:
    * @param - void
    * @return - void
    */
-  static void subrotina_do_sensor_0(void);
+  static void subrotinaDoSensor0(void);
 
   /** Subrotina chamada assim que a interrupção é identificada pelo sensor 1
    * @param - void
    * @return - void
    */
-  static void subrotina_do_sensor_1(void);
+  static void subrotinaDoSensor1(void);
 
   /** Função que realiza o processo de bastecimento
    *  As portas de entrada são monitoradas por Threads
@@ -139,12 +145,6 @@ public:
    * @return - float volume_dos_pulsos, volume calculado
    */
   float realizarAbastecimento(float volume_a_ser_abastecido);
-
-  /** Função que reinicia o Arduino
-   * @param - void
-   * @return - void
-   */
-  void reiniciarArduino(void);
 
 private:
   int _bomba_gatilho_0;

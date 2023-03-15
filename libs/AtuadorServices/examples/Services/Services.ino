@@ -23,15 +23,16 @@
 
 #include "AtuadorServices.h"
 
-AtuadorServices esp32(32, 13, 16, 34, 33, 19, 18, 17);
+AtuadorServices esp32(13, -1, 4, -1, 32, 33, 27, 26);
 
-void timeout(void){
+void timeout(void)
+{
   Serial.begin(9600);
   Serial.println("Iniciando abastecimento em 3,2,1...");
   delay(3000);
 }
 
-void setup() 
+void setup()
 {
   timeout();
   Serial.println(esp32.realizarAbastecimento(50));
@@ -39,5 +40,4 @@ void setup()
 
 void loop()
 {
-  
 }
