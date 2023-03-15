@@ -89,3 +89,23 @@ void loop()
   
 }
 ```
+
+- keywords.txt
+```
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+<Object>Services KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setup<Object>  KEYWORD2
+<funcionalidade>   KEYWORD2
+```
