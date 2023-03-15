@@ -71,14 +71,14 @@ public:
    * @param - void
    * @return - void
    */
-  static void subrotina_de_requisicao(void);
+  static void subrotinaDeRequisicao(void);
 
   /** Subrotina para ser usada como callback em onReceive
    * @param - int bytes_barramento: quantidade de bytes lidos no barramento
    * @return - void
    */
-  static void subrotina_de_recebimento(int bytes_do_barramento);
-    
+  static void subrotinaDeRecebimento(int bytes_do_barramento);
+
 private:
   byte _i2c_endereco_escravo;
   byte _buffer_i2c[128];
