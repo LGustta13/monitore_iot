@@ -21,23 +21,14 @@
   8. pino_led_azul          /
 */
 
-#include "AtuadorServices.h"
+#include "RtcServices.h"
 
-AtuadorServices esp32(32, 13, 16, 34, 33, 19, 18, 17);
+RtcServices rtc();
 
-void timeout(void){
-  Serial.begin(9600);
-  Serial.println("Iniciando abastecimento em 3,2,1...");
-  delay(3000);
-}
-
-void setup() 
+void setup()
 {
-  timeout();
-  Serial.println(esp32.realizarAbastecimento(50));
 }
 
 void loop()
 {
-  
 }
