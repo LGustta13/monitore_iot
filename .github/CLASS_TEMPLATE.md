@@ -62,7 +62,7 @@ public:
 - Arquivo .ino
 ```c++
 /*
-  <Object>Services.h - Biblioteca para <descrição>.
+  Services.ino - exemplo de uso das funções
   Criado pelo <usuário>, <data>.
 */
 
