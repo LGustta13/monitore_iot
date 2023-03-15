@@ -36,8 +36,8 @@ void I2cServices::setupI2c(void)
             delay(100);
     }
 
-    WireSlave.onRequest(subrotina_de_requisicao);
-    WireSlave.onReceive(subrotina_de_recebimento);
+    WireSlave.onRequest(subrotinaDeRequisicao);
+    WireSlave.onReceive(subrotinaDeRecebimento);
 }
 
 void I2cServices::enviarDadosDoGps(void)
@@ -160,12 +160,12 @@ void I2cServices::eventoDeRecebimentoI2C(int bytes_do_barramento)
     }
 }
 
-void I2cServices::subrotina_de_requisicao(void)
+void I2cServices::subrotinaDeRequisicao(void)
 {
     _instance->eventoDeRequisicaoI2C();
 }
 
-void I2cServices::subrotina_de_recebimento(int bytes_do_barramento)
+void I2cServices::subrotinaDeRecebimento(int bytes_do_barramento)
 {
     _instance->eventoDeRecebimentoI2C(bytes_do_barramento);
 }
