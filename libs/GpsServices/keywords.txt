@@ -1,0 +1,19 @@
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+GpsServices KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setupGps    KEYWORD2
+getDadosDeLatitude      KEYWORD2
+getDadosDeLongitude KEYWORD2
+getInfoDoGps    KEYWORD2
+getBufferRxTx   KEYWORD2
