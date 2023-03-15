@@ -3,7 +3,7 @@
   <p align="center">Solução baseada em sistemas embarcados para automação de bombas de abastecimento de combustível em postos internos<p>
   
   <p align="center">
-    <a href="https://docs.google.com/document/d/1Z0trQTCmzpOvDRXR5CnPIbvVpgNeSryGF7cR6fzCFT8/edit">
+    <a href="https://docs.google.com/document/d/1DCEagFOoA5uxenn32Hwd2TBX1xMmIO1OFefpkWrwCnw/edit">
     	<img src="https://img.shields.io/badge/-Monografia-lightgrey"/>
     </a>
   </p>
