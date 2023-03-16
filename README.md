@@ -1,6 +1,6 @@
 <p align="center">
   <h2 align="center">TCC - Repositório</h2>
-  <p align="center">Solução baseada em sistemas embarcados para automação de bombas de abastecimento de combustível em postos internos<p>
+  <p align="center">Solução baseada no kit de desenvolvimento ESP32 para automação de bombas de abastecimento de combustível em postos internos<p>
   
   <p align="center">
     <a href="https://docs.google.com/document/d/1DCEagFOoA5uxenn32Hwd2TBX1xMmIO1OFefpkWrwCnw/edit">
