@@ -2,6 +2,7 @@
   AtuadorServices.cpp - Biblioteca para enviar sinais de comando
   aos atuadores do sistema.
   Criado pelo Luis Gustavo, 29 de Novembro, 2022.
+  Atualização de funcionalidades, 16 de Março, 2023.
 */
 
 #include "AtuadorServices.h"
@@ -135,9 +136,10 @@ float AtuadorServices::getPulsosDaBombaPorParalelismo(float volume_a_ser_abastec
 
 float AtuadorServices::getPulsosDaBombaPorInterrupcao_v3(float volume_a_ser_abastecido)
 {
-    while(true){
-      Serial.println(_contador_pulsos_sensor_1);
-      // Serial.println(analogRead(_pino_sensor_1));
+    while (true)
+    {
+        Serial.println(_contador_pulsos_sensor_1);
+        // Serial.println(analogRead(_pino_sensor_1));
     }
 }
 
@@ -154,44 +156,44 @@ float AtuadorServices::getPulsosDaBombaPorInterrupcao_v2(float volume_a_ser_abas
 
     for (int i = 0; i < timer; ++i)
     {
-      Serial.println(_contador_pulsos_sensor_0 );
+        Serial.println(_contador_pulsos_sensor_0);
         if (_contador_pulsos_sensor_0 > 0 or _contador_pulsos_sensor_1 > 0)
         {
-              //Serial.println(_contador_pulsos_sensor_0);
-              i = 0;
-//
-//            if (_contador_pulsos_sensor_1 >= in1)
-//            {
-//                in1 = _contador_pulsos_sensor_1;
-//            }
-//            else
-//            {
-//                qtd_1 = (qtd_1 + in1);
-//                in1 = _contador_pulsos_sensor_1;
-//            }
-//
-//            if (_contador_pulsos_sensor_0 >= in0)
-//            {
-//                in0 = _contador_pulsos_sensor_0;
-//            }
-//            else
-//            {
-//                qtd_0 = (qtd_0 + in0);
-//                in0 = _contador_pulsos_sensor_0;
-//            }
-//
-//            qtd_t = (qtd_0 + qtd_1 + in0 + in1);
-//
-//            if (qtd_t >= volume_a_ser_abastecido)
-//            {
-//                i = timer;
-//            }
-//
-//            Serial.println(qtd_t);
+            // Serial.println(_contador_pulsos_sensor_0);
+            i = 0;
+            //
+            //            if (_contador_pulsos_sensor_1 >= in1)
+            //            {
+            //                in1 = _contador_pulsos_sensor_1;
+            //            }
+            //            else
+            //            {
+            //                qtd_1 = (qtd_1 + in1);
+            //                in1 = _contador_pulsos_sensor_1;
+            //            }
+            //
+            //            if (_contador_pulsos_sensor_0 >= in0)
+            //            {
+            //                in0 = _contador_pulsos_sensor_0;
+            //            }
+            //            else
+            //            {
+            //                qtd_0 = (qtd_0 + in0);
+            //                in0 = _contador_pulsos_sensor_0;
+            //            }
+            //
+            //            qtd_t = (qtd_0 + qtd_1 + in0 + in1);
+            //
+            //            if (qtd_t >= volume_a_ser_abastecido)
+            //            {
+            //                i = timer;
+            //            }
+            //
+            //            Serial.println(qtd_t);
         }
         else
         {
-//            Serial.println(qtd_t);
+            //            Serial.println(qtd_t);
         }
         delay(250);
     }
@@ -219,7 +221,7 @@ float AtuadorServices::getPulsosDaBombaPorInterrupcao(float volume_a_ser_abastec
             fluxo_combustivel_em_Lseg = fluxo_combustivel_em_Lmin / 60; // Cálculo do volume em L passado pelo sensor
             volume_total += fluxo_combustivel_em_Lseg;                  // Armazenamento do volume
 
-            _contador_pulsos_sensor_0 = 0;               // Reinicializacao do contador de pulsos
+            _contador_pulsos_sensor_0 = 0;      // Reinicializacao do contador de pulsos
             millis_do_loop_anterior = millis(); // Atualizacao da variável tempo_antes
         }
 
@@ -259,5 +261,3 @@ float AtuadorServices::realizarAbastecimento(float volume_a_ser_abastecido)
 
     return volume_dos_pulsos;
 }
-
-
