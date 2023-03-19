@@ -19,7 +19,7 @@ void discoverOneWireDevices(void)
 {
     byte i;
     byte present = 0;
-    unsigned long data = 0;
+    unsigned int data = 0;
     byte addr[8];
 
     // Serial.print("...\n\r");
