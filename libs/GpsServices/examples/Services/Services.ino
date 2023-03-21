@@ -3,7 +3,7 @@
   Criado pelo Luis Gustavo, 26 de Dezembro, 2022.
 */
 
-#include <GpsServices.h>
+#include "GpsServices.h"
 
 // Configura o gps
 GpsServices gps;
@@ -15,7 +15,7 @@ void setup()
     gps.getInfoDoGps();
     gps.getDadosDeLongitude();
     gps.getDadosDeLatitude();
-    gps.getBufferRxTx();
+    // gps.getBufferRxTx();
 }
 
 void loop()
