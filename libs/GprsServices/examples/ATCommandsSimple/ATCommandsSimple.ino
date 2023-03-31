@@ -27,9 +27,13 @@ AT+HTTPTERM -> OK; finalizar comunicação http
 void setup()
 {
     // put your setup code here, to run once:
+    pinMode(26, OUTPUT);
+    pinMode(27, OUTPUT);
     Serial.begin(9600);
     Serial2.begin(9600);
     Serial.println("\nExecutando método GET");
+    digitalWrite(26, HIGH);
+    digitalWrite(27, LOW);
 }
 
 void loop()
