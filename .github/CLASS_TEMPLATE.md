@@ -22,7 +22,7 @@ void <Object>Services::<funcionalidade>(void)
 }
 ```
 
-- Arquivo .cpp
+- Arquivo .h
 ```c++
 /*
   <Object>Services.h - Biblioteca para <descrição>.
