@@ -2,6 +2,7 @@
   DrexiaServices.h - Biblioteca para enviar sinais de comando
   e auxiliar na identificação pelo Dréxia.
   Criado pelo Luis Gustavo, 16 de Dezembro, 2022.
+  Atualização, 02 de Abril, 2023
 */
 
 #ifndef DREXIASERVICES_H
@@ -9,12 +10,11 @@
 
 #include <Arduino.h>
 #include <OneWire.h>
-#include <AtuadorServices.h>
 
 class DrexiaServices
 {
 public:
-  DrexiaServices(int pino_one_wire, AtuadorServices &esp32);
+  DrexiaServices(int pino_one_wire);
 
   /** Funcao que realiza o setup do barramento OneWire
    * @param - void
@@ -38,36 +38,11 @@ public:
    */
   void getIdDoCartao64bits(void);
 
-  /** Funcao que verifica os usuários identificados no barramento
-   * @param - byte comando_barramento, byte vindo do barramento
-   * @return - void
-   */
-  void emitirAudio(byte comando_barramento);
-
-  /** Funcao que adota um tempo limite até que a próxima identificaçãp
-   * ocorra
-   * @param - bool motorista_ou_veiculo, condição para ser motorista ou veículo
-   * @return - void
-   */
-  void intervaloEsperaParaIdentificacao(bool motorista_ou_veiculo);
-
-  /** Verifica e armazena o ID do cartão lido pelo Dréxia
-   * @param - byte comando_barramento, byte vindo do barramento
-   * @return - void
-   */
-  void verificarUsuarioDoCartao(byte comando_barramento);
-
   /** Funcao que resgata o id do cartao registrado no momento
    * @param - void
-   * @return - unsigned long _id_do_cartao, identificação atual
+   * @return - int _id_do_cartao, identificação atual
    */
-  unsigned long getIdDoCartao(void);
-
-  /** Funcao que seta o id do cartao registrado no momento
-   * @param - unsigned long novo_id_do_cartao, identificação atual
-   * @return - void
-   */
-  void setIdDoCartao(unsigned long);
+  int getIdDoCartao(void);
 
   /** Funcao que resgata o buffer do barramento 1-Wire
    * @param - void
@@ -78,13 +53,8 @@ public:
 private:
   int _pino_one_wire;
   byte _buffer_1wire[8];
-  byte _comando_frentista = 0x00;
-  byte _comando_veiculo = 0x01;
-  byte _comando_motorista = 0x02;
-
-  unsigned long _id_do_cartao;
+  int _id_do_cartao;
   OneWire _barramento_drexia;
-  AtuadorServices _esp32;
 };
 
 #endif

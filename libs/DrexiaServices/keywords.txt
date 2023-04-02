@@ -15,9 +15,5 @@ DrexiaServices KEYWORD1
 setupOneWire  KEYWORD2
 getCodigoDoCartao32bits   KEYWORD2
 getIdDoCartao64bits KEYWORD2
-emitirAudio   KEYWORD2
-intervaloEsperaParaIdentificacao  KEYWORD2
-verificarUsuarioDoCartao  KEYWORD2
 getIdDoCartao KEYWORD2
-setIdDoCartao  KEYWORD2
 getBuffer1Wire    KEYWORD2

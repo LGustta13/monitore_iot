@@ -2,11 +2,12 @@
   DrexiaServices.cpp - Biblioteca para enviar sinais de comando
   e auxiliar na identificação pelo Dréxia.
   Criado pelo Luis Gustavo, 16 de Dezembro, 2022.
+  Atualização, 02 de Abril, 2023
 */
 
 #include <DrexiaServices.h>
 
-DrexiaServices::DrexiaServices(int pino_one_wire, AtuadorServices &esp32) : _esp32(esp32)
+DrexiaServices::DrexiaServices(int pino_one_wire)
 {
     _pino_one_wire = pino_one_wire;
     OneWire _barramento_drexia(pino_one_wire);
@@ -52,70 +53,9 @@ void DrexiaServices::getIdDoCartao64bits(void)
     _barramento_drexia.reset_search();
 }
 
-void DrexiaServices::emitirAudio(byte comando_barramento)
-{
-    if (comando_barramento == _comando_frentista)
-    {
-        // Manda um áudio
-        Serial.println("Esperando identificação do FRENTISTA: ");
-    }
-    else if (comando_barramento == _comando_veiculo)
-    {
-        // Manda um áudio
-        Serial.println("Esperando identificação do VEÍCULO: ");
-    }
-    else if (comando_barramento == _comando_motorista)
-    {
-        // Manda um áudio
-        Serial.println("Esperando identificação do MOTORISTA: ");
-    }
-}
-
-void DrexiaServices::intervaloEsperaParaIdentificacao(bool motorista_ou_veiculo)
-{
-    unsigned long contador = 0;
-    unsigned long tempo_espera_limite = 10000;
-    unsigned short int id_nao_identificado = 0;
-    unsigned short int id_identificacao_osciosa = 1;
-
-    while (_id_do_cartao == id_nao_identificado)
-    {
-        getIdDoCartao64bits();
-        if (motorista_ou_veiculo)
-        {
-            contador++;
-            if (contador >= tempo_espera_limite)
-            {
-                _id_do_cartao = id_identificacao_osciosa;
-                _esp32.atuarNoBuzzer();
-            }
-        }
-    }
-}
-
-void DrexiaServices::verificarUsuarioDoCartao(byte comando_barramento)
-{
-    bool motorista_ou_veiculo = false;
-
-    if (comando_barramento != _comando_frentista)
-    {
-        motorista_ou_veiculo = true;
-    }
-
-    emitirAudio(comando_barramento);
-    intervaloEsperaParaIdentificacao(motorista_ou_veiculo);
-
-    _esp32.atuarNoBuzzer();
-}
-
-unsigned long DrexiaServices::getIdDoCartao(void)
+int DrexiaServices::getIdDoCartao(void)
 {
     return _id_do_cartao;
-}
-
-void DrexiaServices::setIdDoCartao(unsigned long novo_id_do_cartao)
-{
-    _id_do_cartao = novo_id_do_cartao;
 }
 
 byte *DrexiaServices::getBuffer1Wire(void)
