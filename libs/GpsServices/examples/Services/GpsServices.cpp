@@ -2,6 +2,7 @@
   GpsServices.cpp - Biblioteca para enviar sinais de comando
   e auxiliar no monitoramento pelo Gps.
   Criado pelo Luis Gustavo, 26 de Dezembro, 2022.
+  Atualizado, 02 de Abril, 2023.
 */
 
 #include "GpsServices.h"
@@ -9,37 +10,17 @@
 GpsServices::GpsServices(void)
 {
     TinyGPSPlus _gps;
-    setupGps();
-}
-
-void GpsServices::setupGps(void)
-{
     Serial2.begin(9600);
 }
 
-void GpsServices::getDadosDeLatitude(void)
+void GpsServices::getInfoGps(void)
 {
-    signed int raw_data_latitude;
-    raw_data_latitude = (signed int)(_gps.location.lat() * 1000000);
-    _buffer_rxtx[0] = (raw_data_latitude >> 24);
-    _buffer_rxtx[1] = (raw_data_latitude >> 16) & 255;
-    _buffer_rxtx[2] = (raw_data_latitude >> 8) & 255;
-    _buffer_rxtx[3] = (raw_data_latitude)&255;
+    _latitude = (float)(_gps.location.lat(), 6);
+    _longitude = (float)(_gps.location.lng(), 6);
 }
 
-void GpsServices::getDadosDeLongitude(void)
+void GpsServices::handleLatitudeLongitude(void)
 {
-    signed int raw_data_longitude;
-    raw_data_longitude = (signed int)(_gps.location.lng() * 1000000);
-    _buffer_rxtx[4] = (raw_data_longitude >> 24);
-    _buffer_rxtx[5] = (raw_data_longitude >> 16) & 255;
-    _buffer_rxtx[6] = (raw_data_longitude >> 8) & 255;
-    _buffer_rxtx[7] = (raw_data_longitude)&255;
-}
-
-void GpsServices::getInfoDoGps(void)
-{
-    signed int raw_data_latitude, raw_data_longitude;
     bool dados_verificados = false, dados_da_porta_serial_resgatados = false, dados_de_localizacao_validos = false;
 
     while (dados_verificados == false)
@@ -50,8 +31,7 @@ void GpsServices::getInfoDoGps(void)
             dados_de_localizacao_validos = _gps.location.isValid();
             if (dados_de_localizacao_validos)
             {
-                getDadosDeLatitude();
-                getDadosDeLongitude();
+                getInfoGps();
                 dados_verificados = true;
             }
             else
@@ -62,7 +42,12 @@ void GpsServices::getInfoDoGps(void)
     }
 }
 
-byte *GpsServices::getBufferRxTx(void)
+float GpsServices::getLatitude(void)
 {
-    return _buffer_rxtx;
+    return _latitude;
+}
+
+float GpsServices::getLongitude(void)
+{
+    return _longitude;
 }
