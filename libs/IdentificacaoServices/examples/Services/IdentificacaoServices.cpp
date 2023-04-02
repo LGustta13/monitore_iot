@@ -24,16 +24,6 @@ void IdentificacaoServices::setIdFrentista(int id)
   _id_frentista = id;
 }
 
-int IdentificacaoServices::getIdMotorista(void)
-{
-  return _id_motorista;
-}
-
-void IdentificacaoServices::setIdMotorista(int id)
-{
-  _id_motorista = id;
-}
-
 int IdentificacaoServices::getIdVeiculo(void)
 {
   return _id_veiculo;
