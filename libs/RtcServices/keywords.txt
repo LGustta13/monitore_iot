@@ -11,3 +11,7 @@ RtcServices KEYWORD1
 #######################################
 # Methods and Functions (KEYWORD2)
 #######################################
+
+handleDataHorarioAbastecimento  KEYWORD2
+getHorario  KEYWORD2
+getData KEYWORD2
