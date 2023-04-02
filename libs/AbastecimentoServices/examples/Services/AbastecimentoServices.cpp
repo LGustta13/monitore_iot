@@ -9,72 +9,72 @@ AbastecimentoServices::AbastecimentoServices()
 {
 }
 
-int getIdTanque(void)
+int AbastecimentoServices::getIdTanque(void)
 {
     return _id_tanque;
 }
 
-void setIdTanque(int id)
+void AbastecimentoServices::setIdTanque(int id)
 {
     _id_tanque = id;
 }
 
-String getNomeTanque(void)
+String AbastecimentoServices::getNomeTanque(void)
 {
     return _nome_tanque;
 }
 
-void setNomeTanque(String nome)
+void AbastecimentoServices::setNomeTanque(String nome)
 {
     _nome_tanque = nome;
 }
 
-float getVolumeSaida(void)
+float AbastecimentoServices::getVolumeSaida(void)
 {
     return _volume_saida;
 }
 
-void setVolumeSaida(float volume)
+void AbastecimentoServices::setVolumeSaida(float volume)
 {
     _volume_saida = volume;
 }
 
-Localizacao getLocalizacaoBomba(void)
+Localizacao AbastecimentoServices::getLocalizacaoBomba(void)
 {
     return _gps;
 }
 
-void setLocalizacaoBomba(Localizacao localizacao)
+void AbastecimentoServices::setLocalizacaoBomba(Localizacao localizacao)
 {
     _gps = localizacao;
 }
 
-Data getDataInicial(void)
+Data AbastecimentoServices::getDataInicial(void)
 {
     return _inicio_abastecimento;
 }
 
-void setDataInicial(Data data_inicial)
+void AbastecimentoServices::setDataInicial(Data data_inicial)
 {
     _inicio_abastecimento = data_inicial;
 }
 
-Data getDataFinal(void)
+Data AbastecimentoServices::getDataFinal(void)
 {
     return _fim_abastecimento;
 }
 
-void setDataFinal(Data data_final)
+void AbastecimentoServices::setDataFinal(Data data_final)
 {
     _fim_abastecimento = data_final;
 }
 
-Identificacao getUsuarios(void)
+Identificacao AbastecimentoServices::getUsuarios(void)
 {
     return _usuarios;
 }
 
-void setUsuarios(Identificacao usuarios)
+void AbastecimentoServices::setUsuarios(Identificacao usuarios)
 {
     _usuarios = usuarios
 }
