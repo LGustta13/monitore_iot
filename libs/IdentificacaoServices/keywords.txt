@@ -1,0 +1,16 @@
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+IdentificacaoServices KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+setupIdentificacao  KEYWORD2
+<funcionalidade>   KEYWORD2
