@@ -12,5 +12,11 @@ IdentificacaoServices KEYWORD1
 # Methods and Functions (KEYWORD2)
 #######################################
 
-setupIdentificacao  KEYWORD2
-<funcionalidade>   KEYWORD2
+getIdFrentista  KEYWORD2
+setIdFrentista   KEYWORD2
+getIdMotorista
+setIdMotorista
+getIdVeiculo
+setIdVeiculo
+getIdUsuario
+setIdUsuario
