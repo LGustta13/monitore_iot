@@ -6,6 +6,8 @@
  * TinyGSM Getting Started guide:
  *   https://tiny.cc/tinygsm-readme
  *
+ * Lista de comandos AT
+ * 
  **************************************************************/
 
 // Select your modem:
@@ -47,7 +49,7 @@ uint32_t rate = 0; // Set to 0 for Auto-Detect
 
 void setup() {
   // Set console baud rate
-  SerialMon.begin(115200);
+  SerialMon.begin(9600);
   delay(6000);
 }
 
