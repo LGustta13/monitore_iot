@@ -1,6 +1,7 @@
 /*
   IdentificacaoServices.h - Classe para gerar um objeto de identificação
   Criado pelo Luis Gustavo, 01 de Abril, 2023.
+  Atualizado, 02 de Abril, 2023.
 */
 
 #ifndef IDENTIFICACAOSERVICES_H
