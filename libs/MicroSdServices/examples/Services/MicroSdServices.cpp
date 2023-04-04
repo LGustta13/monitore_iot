@@ -9,13 +9,17 @@
 MicroSdServices::MicroSdServices()
 {
 
-    setupMicroSd();
+  setupMicroSd();
 }
 
 void MicroSdServices::setupMicroSd(void)
 {
 }
 
-void MicroSdServices::<funcionalidade>(void)
+void MicroSdServices::salvarAbastecimento(void)
+{
+}
+
+void MicroSdServices::resgatarAbastecimento(void)
 {
 }
