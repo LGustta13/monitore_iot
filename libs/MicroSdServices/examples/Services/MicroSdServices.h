@@ -8,29 +8,38 @@
 #define MICROSDSERVICES_H
 
 #include <Arduino.h>
+#include <ArduinoJSON>
+#include "FS.h"
+#include "SD.h"
+#include "SPI.h"
 
 class MicroSdServices
 {
 public:
-  MicroSdServices(void);
+    MicroSdServices(int pino);
+    MicroSdServices(int pino, bool abastecimento_fake);
 
-  /** Funcao que realiza o setup do módulo microSD
-   * @param - void
-   * @return - void
-   */
-  void setupMicroSd(void);
+    /** Funcao que realiza o setup do módulo microSD
+     * @param - void
+     * @return - void
+     */
+    void inicializarMicroSd(void);
 
-  /** Descrição
-   * @param -
-   * @return -
-   */
-  void salvarAbastecimento(void);
+    /** Acessa os abastecimentos e salva em uma variável
+     * @param -void
+     * @return - String anastecimentos: abastecimentos
+     */
+    String lerAbastecimentos(void);
 
-  /** Descrição
-   * @param -
-   * @return -
-   */
-  void resgatarAbastecimento(void);
+    /** Escreve os abastecimentos e salva em uma variável
+     * @param -void
+     * @return - String anastecimentos: abastecimentos
+     */
+    String escreverAbastecimentos(void);
+
+  private:
+  String _abastecimentos;
+  int _pino_moduloSD;
 };
 
 #endif
