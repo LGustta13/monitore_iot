@@ -2,13 +2,15 @@
 #include <SD.h>
 #include <SPI.h>
 
-struct Data{
+struct Data
+{
   char dia[20];
   int timezone_tipo;
   char timezone[3];
 };
 
-struct Abastecimento{
+struct Abastecimento
+{
   int id;
   char nome_bomba[25];
   float latitude;
@@ -22,10 +24,15 @@ struct Abastecimento{
 };
 
 const char *filename = "/Abastecimentos.txt";
-Abastecimento abastecimento; 
+const int chipSelect = 5;
+int quantidadeDeAbastecimentos = 5;
+int bytesAbastecimentos = 369;
+Abastecimento abastecimento;
 Data data;
 
-void loadAbastecimento(Abastecimento &abastecimento){
+// Deve criar um abastecimento para realizar testes
+void criarAbastecimentoFake(Abastecimento &abastecimento)
+{
 
   abastecimento.id = 1;
   strlcpy(abastecimento.nome_bomba, "BOMBA_1", sizeof(abastecimento.nome_bomba));
@@ -44,16 +51,21 @@ void loadAbastecimento(Abastecimento &abastecimento){
   abastecimento.id_frentista = 16651608;
   abastecimento.id_veiculo = 16651608;
   abastecimento.id_motorista = 16651608;
+
 }
 
-void loadAbastecimento_v1(const char *filename, Abastecimento &abastecimento) {
+// Deve acessar o cartão SD por algum abastecimento, se não cria-se um de teste por padrão
+void criarAbastecimentoSD(const char *filename, Abastecimento &abastecimento)
+{
+  // Acessa arquivo
   File file = SD.open(filename);
-  StaticJsonDocument<1024> root;
+  StaticJsonDocument<1056> root;
 
+  // Transforma a string no cartão SD em um objeto JSON
   DeserializationError error = deserializeJson(root, file);
   if (error)
     Serial.println(F("Failed to read file, using default configuration"));
-    
+
   abastecimento.id = root["tank_id"] | 1;
   strlcpy(abastecimento.nome_bomba, root["tank_name"] | "BOMBA_1", sizeof(abastecimento.nome_bomba));
   abastecimento.latitude = root["initial_volume"] | 199.99;
@@ -74,16 +86,20 @@ void loadAbastecimento_v1(const char *filename, Abastecimento &abastecimento) {
   abastecimento.id_veiculo = root["ident_veiculo"] | 16651608;
   abastecimento.id_motorista = root["ident_motorista"] | 16651608;
 
-  file.close();  
+  file.close();
 }
 
-void deserializeAllSupplies(const char *filename, Abastecimento &abastecimento) {
+// Salva os abastecimentos no cartão de memória, no formato de array de objetos
+void saveAbastecimentosArray(const char *filename, Abastecimento &abastecimento)
+{
   File file = SD.open(filename);
-  StaticJsonDocument<1024> root;
+
+  // +2 por conta dos colchetes do array []
+  StaticJsonDocument<(quantidadeDeAbastecimentos*bytesAbastecimentos)+2> root;
 
   DeserializationError error = deserializeJson(root, file);
   if (error)
-    Serial.println(F("Nenhum abastecimento no arquivo"));
+    Serial.println(F("Nenhum abastecimento inicial no arquivo"));
 
   file.close();
 
@@ -99,7 +115,7 @@ void deserializeAllSupplies(const char *filename, Abastecimento &abastecimento) 
   utc_initial_date_time["date"] = abastecimento.data_inicial.dia;
   utc_initial_date_time["timezone_type"] = abastecimento.data_inicial.timezone_tipo;
   utc_initial_date_time["timezone"] = abastecimento.data_inicial.timezone;
-  
+
   JsonObject utc_final_date_time = obj.createNestedObject("utc_final_date_time");
   utc_final_date_time["date"] = abastecimento.data_final.dia;
   utc_final_date_time["timezone_type"] = abastecimento.data_final.timezone_tipo;
@@ -108,18 +124,22 @@ void deserializeAllSupplies(const char *filename, Abastecimento &abastecimento) 
   obj["ident_pessoa_apoio"] = abastecimento.id_frentista;
   obj["ident_veiculo"] = abastecimento.id_veiculo;
   obj["ident_motorista"] = abastecimento.id_motorista;
-    
+
   file = SD.open(filename, FILE_WRITE);
-  if (serializeJson(root, file) == 0) {
+  if (serializeJson(root, file) == 0)
+  {
     Serial.println(F("Failed to write to file"));
   }
   file.close();
 }
 
-void saveAbastecimento(const char *filename, const Abastecimento &abastecimento){
-  
+// Salvar um abastecimento no cartão de memória, sem vetorizar
+void saveAbastecimento(const char *filename, const Abastecimento &abastecimento)
+{
+
   File file = SD.open(filename, FILE_APPEND);
-  if (!file) {
+  if (!file)
+  {
     Serial.println(F("Failed to create file"));
     return;
   }
@@ -136,7 +156,7 @@ void saveAbastecimento(const char *filename, const Abastecimento &abastecimento)
   utc_initial_date_time["date"] = abastecimento.data_inicial.dia;
   utc_initial_date_time["timezone_type"] = abastecimento.data_inicial.timezone_tipo;
   utc_initial_date_time["timezone"] = abastecimento.data_inicial.timezone;
-  
+
   JsonObject utc_final_date_time = root.createNestedObject("utc_final_date_time");
   utc_final_date_time["date"] = abastecimento.data_final.dia;
   utc_final_date_time["timezone_type"] = abastecimento.data_final.timezone_tipo;
@@ -146,23 +166,28 @@ void saveAbastecimento(const char *filename, const Abastecimento &abastecimento)
   root["ident_veiculo"] = abastecimento.id_veiculo;
   root["ident_motorista"] = abastecimento.id_motorista;
 
-  if (serializeJson(root, file) == 0) {
+  if (serializeJson(root, file) == 0)
+  {
     Serial.println(F("Failed to write to file"));
   }
 
   file.close();
 }
 
-void printFile(const char *filename) {
-  
+// Exibir os dados do arquivo
+void printArquivo(const char *filename)
+{
+
   File file = SD.open(filename);
-  if (!file) {
+  if (!file)
+  {
     Serial.println(F("Failed to read file"));
     return;
   }
 
   // Extract each characters by one by one
-  while (file.available()) {
+  while (file.available())
+  {
     Serial.print((char)file.read());
   }
   Serial.println();
@@ -170,85 +195,111 @@ void printFile(const char *filename) {
   file.close();
 }
 
-/// PAREI AQUIIIIIIIIIIIII
+// PAREI AQUIIIIIIIIIIIII
 // hOW TO SEND A json DOCUMENT IN AN httP REQUEST
-//https://arduinojson.org/v6/how-to/use-arduinojson-with-httpclient/
+// https://arduinojson.org/v6/how-to/use-arduinojson-with-httpclient/
 // tentar ler os dados do file pelo desserialize e salvar (serialize) em uma string json, para usar na requisição do módulo GSM
 
-void saveInVariable(const char *filename) {
-  
-  File file = SD.open(filename);
-  String json;
+void saveNaVariavel(const char *filename)
+{
+  String data = "";
 
-  if (!file) {
-    Serial.println(F("Failed to read file"));
-    return;
+  if (SD.exists(filename)) {
+    File file = SD.open(filename);
+
+    if (!file)
+    {
+      Serial.println(F("Failed to read file"));
+
+    } else {
+
+      // Extract each characters by one by one
+      while (file.available())
+      {
+        data = file.readString();
+        file.close();
+      }
+      
+      Serial.println("Conteúdo do arquivo");
+      Serial.println(data);
+    }
+
+  } else {
+    Serial.println("O arquivo não existe!");
   }
-
-  // Extract each characters by one by one
-  while (file.available()) {
-    Serial.print((char)file.read());
-  }
-  Serial.println();
-
-  file.close();
 }
 
-void deleteFile(const char *filename) {
+// Deletar o arquivo
+void deleteArquivo(const char *filename)
+{
   SD.remove(filename);
 }
 
-void setup() {
-  // Initialize serial port
+void setup()
+{
+  // Iniciar o monitor serial
   Serial.begin(9600);
-  while (!Serial) continue;
+
+  while (!Serial)
+    continue; // Aguardando a conexão serial
 
   Serial.println("(1) para gerar um abastecimento");
   Serial.println("(2) para salvar o abastecimento no microSD");
   Serial.println("(3) para printar os abastecimentos");
   Serial.println("(4) para deletar os abastecimentos");
 
-  // Initialize SD library
-  while (!SD.begin(5)) {
+  // Inicializar o cartão SD
+  while (!SD.begin(chipSelect))
+  {
     Serial.println(F("Failed to initialize SD library"));
     delay(1000);
   }
+
+  // Neste ponto o cartão inicializou com sucesso
 }
 
-void loop(){
+void loop()
+{
 
-  while(Serial.available() == 0) {
+  // Verifica se tem algum valor disponível na serial
+  while (Serial.available() == 0)
+  {
   }
-    
+
   int menuChoice = Serial.parseInt();
 
-  switch (menuChoice) {
-    case 1:
-      // Should load default config if run for the first time
-      Serial.println(F("Generating a supply..."));
-      loadAbastecimento(abastecimento);
+  // Verifica qual caso se encaixa o valor
+  switch (menuChoice)
+  {
+  case 1:
+    // Should load default config if run for the first time
+    Serial.println(F("Generating a supply..."));
+    criarAbastecimentoFake(abastecimento);
     break;
 
-    case 2:
-      // Create configuration file
-      Serial.println(F("Saving supplies..."));
-      deserializeAllSupplies(filename, abastecimento);
+  case 2:
+    // Create configuration file
+    Serial.println(F("Saving supplies..."));
+    saveAbastecimentosArray(filename, abastecimento);
     break;
 
-    case 3:
-      // Dump config file
-      Serial.println(F("Printing suplies..."));
-      printFile(filename);
+  case 3:
+    // Printar os dados do arquivo
+    Serial.println(F("Printing suplies..."));
+    printArquivo(filename);
     break;
 
-    case 4:
-      // Delete the file
-      Serial.println(F("Deleting file with supplies..."));
-      deleteFile(filename);
+  case 4:
+    // Deletar o arquivo
+    Serial.println(F("Deleting file with supplies..."));
+    deleteArquivo(filename);
 
-    default:
-      Serial.println();
+  case 5:
+    // Salvar na variável
+    Serial.println(F("Saving in a variable and printing..."));
+    saveNaVariavel(filename);
+
+  default:
+    Serial.println();
   }
 }
-
-  
