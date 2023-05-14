@@ -14,11 +14,10 @@
 #define TINY_GSM_MODEM_SIM800
 #define SerialMon Serial
 #define SerialAT Serial2
-#define TINY_GSM_RX_BUFFER 1024
+#define TINY_GSM_RX_BUFFER 10000
 #define GSM_BAUD 9600
-#define USE_SSL
 #define TINY_GSM_USE_GPRS true
-// #define DUMP_AT_COMMANDS
+#define DUMP_AT_COMMANDS
 
 #ifdef DUMP_AT_COMMANDS
 #include <StreamDebugger.h>
@@ -88,14 +87,14 @@ public:
    * @param - int bomba_gatilho_0,
    * @return - void
    */
-  void getBody(void);
+  String getBody(void);
 
 private:
   const char apn[] = "simplepm.algar.br";
   const char gprsUser[] = "";
   const char gprsPass[] = "";
   const char server[] = "darwin-gps.com.br";
-  char resource[] = "/api/motoristas/getRFIDMotoristas.php?chave=fc56dbc6d4652b315b86b71c8d688c1ccdea9c5f1fd07763d2659fde2e2fc49a";
+  char resource[] = "/api/abastecimentos/getAbastecimentosInternoBomba.php?chave=4eef24c6b8248c2271f6663f44ec0de3c2535ca396a22cf60051137d71721309";
   String body;
 }
 

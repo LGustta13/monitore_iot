@@ -15,13 +15,17 @@ void GprsServices::setupGprs(void)
 {
   SerialMon.begin(115200);
   delay(10);
-  SerialAT.begin(9600);
+  SerialAT.begin(115200);
   delay(6000);
 }
 
 void GprsServices::inicializarGprs(void)
 {
   modem.restart();
+
+  String modemInfo = modem.getModemInfo();
+  SerialMon.print("Modem Info: ");
+  SerialMon.println(modemInfo);
 
 #if TINY_GSM_USE_GPRS
   // Unlock your SIM card with a PIN if needed
@@ -142,5 +146,3 @@ String GprsServices::getBody(void)
 {
   return body;
 }
-
-void
