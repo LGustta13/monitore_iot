@@ -2,6 +2,7 @@
   GpsServices.h - Biblioteca para enviar sinais de comando
   e auxiliar no monitoramento pelo Gps.
   Criado pelo Luis Gustavo, 26 de Dezembro, 2022.
+  Atualizado, 02 de Abril, 2023.
 */
 
 #ifndef GPSSERVICES_H
@@ -13,41 +14,40 @@
 class GpsServices
 {
 public:
-    GpsServices(void);
+  /** Construtor, inicializa a serial I2C
+   * @param - void
+   * @return - void
+   */
+  GpsServices(void);
 
-    /** Funcao que realiza o setup do barramento serial para o GPS
-     * @param - void
-     * @return - void
-     */
-    void setupGps(void);
+  /** Funcao que resgata o dado de latitude
+   * @param - void
+   * @return - float latitude: latitude
+   */
+  float getLatitude(void);
 
-    /** Funcao que resgata o dado de latitude já tratado
-     * @param - void
-     * @return - void
-     */
-    void getDadosDeLatitude(void);
+  /** Funcao que resgata o dado de longitude
+   * @param - void
+   * @return - float longitude: longitude
+   */
+  float getLongitude(void);
 
-    /** Funcao que resgata o dado de longitude já tratado
-     * @param - void
-     * @return - void
-     */
-    void getDadosDeLongitude(void);
+  /** Lógica para validar o GPS
+   * @param - void
+   * @return - void
+   */
+  void handleLatitudeLongitude(void);
 
-    /** Verifica os valores de latitude e longitude pelo GPS e atualiza o buffer da uart (rx e tx)
-     * @param - void
-     * @return - void
-     */
-    void getInfoDoGps(void);
-
-    /** Função que resgata o buffer do barramento UART/RXTX
-     * @param - void
-     * @return - byte buffer_rxtx: array com dados do barramento serial
-     */
-    byte *getBufferRxTx(void);
+  /** Pega os valores de latitude e longitude pelo GPS
+   * @param - void
+   * @return - void
+   */
+  void getInfoGps(void);
 
 private:
-    byte _buffer_rxtx[8];
-    TinyGPSPlus _gps;
+  TinyGPSPlus _gps;
+  float _latitude;
+  float _longitude;
 };
 
 #endif
