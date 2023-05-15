@@ -30,3 +30,8 @@ String RtcServices::getData(void)
 {
   return _data;
 }
+
+String RtcServices::getDataHorario(void)
+{
+  return _data + " " + _horario;
+}

@@ -11,6 +11,7 @@ DrexiaServices::DrexiaServices(int pino_one_wire)
 {
     _pino_one_wire = pino_one_wire;
     OneWire _barramento_drexia(pino_one_wire);
+    setIdDoCartao(0);
 
     setupOneWire();
 }
@@ -56,6 +57,11 @@ void DrexiaServices::getIdDoCartao64bits(void)
 int DrexiaServices::getIdDoCartao(void)
 {
     return _id_do_cartao;
+}
+
+void DrexiaServices::setIdDoCartao(int id)
+{
+    _id_do_cartao = id;
 }
 
 byte *DrexiaServices::getBuffer1Wire(void)

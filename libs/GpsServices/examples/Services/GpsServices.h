@@ -11,6 +11,24 @@
 #include <Arduino.h>
 #include <TinyGPSPlus.h>
 
+class Localizacao
+{
+public:
+  void Localizacao(void);
+
+  void setLatitude(float latitude);
+
+  float getLatitude(void);
+
+  void setLongitude(float longitude);
+
+  float getLongitude(void);
+
+private:
+  float _latitude;
+  float _longitude;
+};
+
 class GpsServices
 {
 public:
@@ -24,13 +42,7 @@ public:
    * @param - void
    * @return - float latitude: latitude
    */
-  float getLatitude(void);
-
-  /** Funcao que resgata o dado de longitude
-   * @param - void
-   * @return - float longitude: longitude
-   */
-  float getLongitude(void);
+  Localizacao getLocalizacao(void);
 
   /** Lógica para validar o GPS
    * @param - void
@@ -46,8 +58,7 @@ public:
 
 private:
   TinyGPSPlus _gps;
-  float _latitude;
-  float _longitude;
+  Localizacao _localizacao;
 };
 
 #endif

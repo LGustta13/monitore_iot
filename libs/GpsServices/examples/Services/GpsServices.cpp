@@ -7,9 +7,36 @@
 
 #include "GpsServices.h"
 
+Localizacao::Localizacao(void)
+{
+    _latitude = 0;
+    _longitude = 0;
+}
+
+void Localizacao::setLatitude(float latitude)
+{
+    _latitude = latitude;
+}
+
+float Localizacao::getLatitude(void)
+{
+    return _latitude;
+}
+
+void Localizacao::setLongitude(float longitude)
+{
+    _longitude = longitude;
+}
+
+float Localizacao::getLongitude(void)
+{
+    return _longitude;
+}
+
 GpsServices::GpsServices(void)
 {
     TinyGPSPlus _gps;
+    Localizacao _localizacao();
     Serial2.begin(9600);
 }
 
@@ -17,6 +44,9 @@ void GpsServices::getInfoGps(void)
 {
     _latitude = (float)(_gps.location.lat(), 6);
     _longitude = (float)(_gps.location.lng(), 6);
+
+    _localizacao.setLatitude(_latitude);
+    _localizacao.setLongitude(_longitude);
 }
 
 void GpsServices::handleLatitudeLongitude(void)
@@ -42,12 +72,7 @@ void GpsServices::handleLatitudeLongitude(void)
     }
 }
 
-float GpsServices::getLatitude(void)
+LocalizacaoServices GpsServices::getLocalizacao(void)
 {
-    return _latitude;
-}
-
-float GpsServices::getLongitude(void)
-{
-    return _longitude;
+    return _localizacao;
 }
