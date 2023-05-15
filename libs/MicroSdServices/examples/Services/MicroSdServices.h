@@ -8,37 +8,53 @@
 #define MICROSDSERVICES_H
 
 #include <Arduino.h>
-#include <ArduinoJSON>
-#include "FS.h"
-#include "SD.h"
-#include "SPI.h"
+#include <ArduinoJSON.h>
+#include <SD.h>
+#include <SPI.h>
+
+struct Data
+{
+  char dia[20];
+  int timezone_tipo;
+  char timezone[3];
+};
+
+struct Abastecimento
+{
+  int id;
+  char nome_bomba[25];
+  float latitude;
+  float longitude;
+  float volume_abastecido;
+  Data data_inicial;
+  Data data_final;
+  int id_frentista;
+  int id_motorista;
+  int id_veiculo;
+};
 
 class MicroSdServices
 {
 public:
-    MicroSdServices(int pino);
-    MicroSdServices(int pino, bool abastecimento_fake);
+  MicroSdServices(int pino_sd);
 
-    /** Funcao que realiza o setup do módulo microSD
-     * @param - void
-     * @return - void
-     */
-    void inicializarMicroSd(void);
+  void inicializarMicroSd(void);
 
-    /** Acessa os abastecimentos e salva em uma variável
-     * @param -void
-     * @return - String anastecimentos: abastecimentos
-     */
-    String lerAbastecimentos(void);
+  /** Funcao que realiza o setup do módulo microSD
+   * @param - void
+   * @return - void
+   */
+  String getAbastecimento(void);
 
-    /** Escreve os abastecimentos e salva em uma variável
-     * @param -void
-     * @return - String anastecimentos: abastecimentos
-     */
-    String escreverAbastecimentos(void);
+  /** Acessa os abastecimentos e salva em uma variável
+   * @param -void
+   * @return - String anastecimentos: abastecimentos
+   */
+  void setAbastecimento(String abastecimento_serial);
 
-  private:
-  String _abastecimentos;
+private:
+  String _abastecimento_serial;
+  const char *filename;
   int _pino_moduloSD;
 };
 

@@ -6,25 +6,15 @@
 
 #include "MicroSdServices.h"
 
-MicroSdServices::MicroSdServices(int pino)
+MicroSdServices::MicroSdServices(int pino_sd)
 {
   _pino_moduloSD = pino;
-  inicializarMicroSd();
-}
-
-MicroSdServices::MicroSdServices(int pino, bool abastecimento_fake)
-{
-  _pino_moduloSD = pino;
-  if (abastecimento_fake)
-  {
-    _abastecimentos = "[{\"tank_id\":5449,\"tank_name\":\"BOMBA TRANSPRINT CAJAMAR\",\"initial_volume\":\"NULL\",\"final_volume\":\"NULL\",\"drain_value\":400,\"utc_initial_date_time\":[{\"date\":\"2000-05-02 00:02:00\",\"timezone_type\":3,\"timezone\":\"UTC\"}],\"utc_final_date_time\":[{\"date\":\"2000-05-02 00:10:00\",\"timezone_type\":3,\"timezone\":\"UTC\"}],\"ident_pessoa_apoio\":16651608,\"ident_veiculo\":16651608,\"ident_motorista\":16651608}]";
-  }
   inicializarMicroSd();
 }
 
 void MicroSdServices::inicializarMicroSd(void)
 {
-  if (!SD.begin(_pino_mosuloSD))
+  if (!SD.begin(_pino_moduloSD))
   {
     Serial.println("Card Mount Failed");
     return;
@@ -59,10 +49,10 @@ void MicroSdServices::inicializarMicroSd(void)
   Serial.printf("SD Card Size: %lluMB\n", cardSize);
 }
 
-String MicroSdServices::lerAbastecimentos(void)
+String MicroSdServices::getAbastecimento(void)
 {
 }
 
-void MicroSdServices::escreverAbastecimentos(String)
+void MicroSdServices::setAbastecimento(String abastecimento_serial)
 {
 }
