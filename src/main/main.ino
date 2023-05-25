@@ -215,6 +215,7 @@ bool sistemaControlarInicializacao(AtuadorServices &esp32, GprsServices &sim800L
   {
   }
 
+  esp32.atuarNoLedAzul(HIGH);
   return true;
 }
 
