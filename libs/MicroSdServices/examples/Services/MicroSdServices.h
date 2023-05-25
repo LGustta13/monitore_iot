@@ -36,7 +36,7 @@ struct Abastecimento
 class MicroSdServices
 {
 public:
-  MicroSdServices(int pino_sd);
+  MicroSdServices(int pino_sd, const char *filename_abastecimentos, const char *filename_frentistas, const char *filename_veiculos, const_char *filename_motoristas);
 
   void inicializarMicroSd(void);
 
@@ -52,9 +52,13 @@ public:
    */
   void setAbastecimento(String abastecimento_serial);
 
+  void printArquivo(void);
+
 private:
   String _abastecimento_serial;
-  const char *filename;
+  const char *_filename;
+  int _quantidadeDeAbastecimentos;
+  int _bytesAbastecimentos;
   int _pino_moduloSD;
 };
 

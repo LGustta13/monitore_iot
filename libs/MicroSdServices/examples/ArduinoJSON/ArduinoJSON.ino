@@ -26,7 +26,7 @@ struct Abastecimento
 const char *filename = "/Abastecimentos.txt";
 const int chipSelect = 5;
 int quantidadeDeAbastecimentos = 5;
-int bytesAbastecimentos = 369;
+int bytesAbastecimentos = 380;
 Abastecimento abastecimento;
 Data data;
 
@@ -51,7 +51,6 @@ void criarAbastecimentoFake(Abastecimento &abastecimento)
   abastecimento.id_frentista = 16651608;
   abastecimento.id_veiculo = 16651608;
   abastecimento.id_motorista = 16651608;
-
 }
 
 // Deve acessar o cartão SD por algum abastecimento, se não cria-se um de teste por padrão
@@ -95,7 +94,7 @@ void saveAbastecimentosArray(const char *filename, Abastecimento &abastecimento)
   File file = SD.open(filename);
 
   // +2 por conta dos colchetes do array []
-  StaticJsonDocument<(quantidadeDeAbastecimentos*bytesAbastecimentos)+2> root;
+  StaticJsonDocument<(quantidadeDeAbastecimentos * bytesAbastecimentos) + 2> root;
 
   DeserializationError error = deserializeJson(root, file);
   if (error)
@@ -204,14 +203,16 @@ void saveNaVariavel(const char *filename)
 {
   String data = "";
 
-  if (SD.exists(filename)) {
+  if (SD.exists(filename))
+  {
     File file = SD.open(filename);
 
     if (!file)
     {
       Serial.println(F("Failed to read file"));
-
-    } else {
+    }
+    else
+    {
 
       // Extract each characters by one by one
       while (file.available())
@@ -219,12 +220,13 @@ void saveNaVariavel(const char *filename)
         data = file.readString();
         file.close();
       }
-      
+
       Serial.println("Conteúdo do arquivo");
       Serial.println(data);
     }
-
-  } else {
+  }
+  else
+  {
     Serial.println("O arquivo não existe!");
   }
 }

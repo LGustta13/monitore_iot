@@ -69,7 +69,7 @@ public:
    * @param - void
    * @return - void
    */
-  void requsicaoHttp(void);
+  void requsicaoHttp(String token, String abastecimentosJson);
 
   /** Desconecta o módulo da rede GPRS
    * @param - void
@@ -95,7 +95,7 @@ private:
   const char gprsPass[] = "";
   const char server[] = "darwin-gps.com.br";
   char resource[] = "/api/abastecimentos/getAbastecimentosInternoBomba.php?chave=4eef24c6b8248c2271f6663f44ec0de3c2535ca396a22cf60051137d71721309";
-  String body;
+  String _body;
 }
 
 #endif
