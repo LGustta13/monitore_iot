@@ -2,15 +2,14 @@
  *
  */
 
-#include <DrexiaServices.h>
-#include <IdentificacaoServices.h>
-#include <AtuadorServices.h>
-#include <RtcServices.h>
-#include <I2cServices.h>
-#include <AbastecimentoServices.h>
-#include <GpsServices.h>
-#include <MicroSdServices.h>
-#include <GprsServices.h>
+#include "../libs/AtuadorServices/AtuadorServices.h"
+#include "../libs/DrexiaServices/DrexiaServices.h"
+#include "../libs/IdentificacaoServices/IdentificacaoServices.h"
+#include "../libs/RtcServices/RtcServices.h"
+#include "../libs/AbastecimentoServices/AbastecimentoServices.h"
+#include "../libs/GpsServices/GpsServices.h"
+#include "../libs/MicroSdServices/MicroSdServices.h"
+#include "../libs/GprsServices/GprsServices.h"
 
 AtuadorServices esp32(13, -1, 4, -1, 32, 33, 27, 26);
 RtcServices rtc();
@@ -19,7 +18,8 @@ GprsServices sim800L();
 MicroSdServices sd(5, "Abastecimentos.txt", "Frentistas.txt", "Veiculos.txt", "Motoristas.txt");
 
 // Thread separada, pois é tarefa do sistema como autor
-void sistemaControlarEnviarAbastecimento(GprsServices &sim800L, MicroSdServices &sd)
+/* CASO DE USO 6 - ENVIAR ABASTECIMENTO*/
+bool sistemaControlarEnviarAbastecimento(GprsServices &sim800L, MicroSdServices &sd)
 {
   String abastecimentosJson = sd.getAbastecimento();
 
@@ -37,7 +37,8 @@ void sistemaControlarEnviarAbastecimento(GprsServices &sim800L, MicroSdServices 
   return status_requisicao;
 }
 
-bool sistemaControlarArmazenarAbastecimento(AbastecimentoServices &abastecimento, MicroSdServices &sd)
+/* CASO DE USO 5 - ARMAZENAR ABASTECIMENTO*/
+bool sistemaControlarArmazenarAbastecimento(MicroSdServices &sd, AbastecimentoServices &abastecimento)
 {
   const size_t capacidadeJson = JSON_OBJECT_SIZE(14);
   StaticJsonDocument<capacidadeJson> doc;
@@ -63,7 +64,8 @@ bool sistemaControlarArmazenarAbastecimento(AbastecimentoServices &abastecimento
   return abastecimento_salvo;
 }
 
-bool sistemaControlarFimAbastecimento(RtcServices &rtc, GpsServices &gps, AbastecimentoServices &abastecimento, AtuadorServices &esp32)
+/* CASO DE USO 4 - FINALIZAR ABASTECIMENTO*/
+bool sistemaControlarFimAbastecimento(AtuadorServices &esp32, RtcServices &rtc, GpsServices &gps, AbastecimentoServices &abastecimento)
 {
   abastecimento.setDataFinal(rtc.getDataHorario());
   gps.handleLatitudeLongitude();
@@ -75,7 +77,8 @@ bool sistemaControlarFimAbastecimento(RtcServices &rtc, GpsServices &gps, Abaste
   return true;
 }
 
-bool sistemaControlarInicioAbastecimento(AbastecimentoServices &abastecimento, AtuadorServices &esp32, MicroSdServices &sd)
+/* CASO DE USO 3 - INICIAR ABASTECIMENTO*/
+bool sistemaControlarInicioAbastecimento(AtuadorServices &esp32, MicroSdServices &sd, AbastecimentoServices &abastecimento)
 {
   float volume_a_ser_abastecido = sd.volumeParaAbastecer(abastecimento.getUsuarios().getIdVeiculo());
   esp32.atuarNoDisplay("Realize o abastecimento", 0);
@@ -85,7 +88,6 @@ bool sistemaControlarInicioAbastecimento(AbastecimentoServices &abastecimento, A
 
   return true;
 }
-
 float verificarPulsos(AtuadorServices &esp32, float volume_a_ser_abastecido)
 {
   float volume_abastecido = 0;
@@ -111,6 +113,7 @@ float verificarPulsos(AtuadorServices &esp32, float volume_a_ser_abastecido)
   return volume_abastecido;
 }
 
+/* CASO DE USO 2 - GERAR ABASTECIMENTO*/
 AbastecimentoServices sistemaControlarAbastecimento(AtuadorServices &esp32, IdentificacaoServices &identificacao, RtcServices &rtc)
 {
   AbastecimentoServices abastecimento();
@@ -125,6 +128,7 @@ AbastecimentoServices sistemaControlarAbastecimento(AtuadorServices &esp32, Iden
   return abastecimento;
 }
 
+/* CASO DE USO 1 - ESPERAR IDENTIFICAÇÃO*/
 IdentificacaoServices sistemaControlarEsperarIdentificacao(AtuadorServices &esp32)
 {
   IdentificacaoServices identificacao();
@@ -140,7 +144,6 @@ IdentificacaoServices sistemaControlarEsperarIdentificacao(AtuadorServices &esp3
 
   return identificacao;
 }
-
 int verificarUsuario(byte comando, AtuadorServices &esp32)
 {
   bool motorista_ou_veiculo = false;
@@ -153,7 +156,6 @@ int verificarUsuario(byte comando, AtuadorServices &esp32)
   emitirAudio(comando, AtuadorServices esp32);
   return esperarIdentificacao(motorista_ou_veiculo, AtuadorServices esp32);
 }
-
 void emitirAudio(byte comando, AtuadorServices &esp32)
 {
   if (comando == 0x00)
@@ -175,7 +177,6 @@ void emitirAudio(byte comando, AtuadorServices &esp32)
     // Identificar motorista no LCD
   }
 }
-
 int esperarIdentificacao(bool motorista_ou_veiculo, AtuadorServices &esp32)
 {
   DrexiaServices drexia(25);
@@ -205,6 +206,7 @@ int esperarIdentificacao(bool motorista_ou_veiculo, AtuadorServices &esp32)
   return drexia.getIdDoCartao();
 }
 
+/* CASO DE USO 0 - INICIAR SISTEMA */
 bool sistemaControlarInicializacao(AtuadorServices &esp32, GprsServices &sim800L)
 {
   esp32.atuarNoLedVerde(HIGH);
@@ -237,13 +239,13 @@ void loop()
     AbastecimentoServices abastecimento = sistemaControlarAbastecimento(esp32, identificacao, rtc);
 
     /* CASO DE USO 3 - INICIAR ABASTECIMENTO*/
-    sistemaControlarInicioAbastecimento(esp32, abastecimento, sd);
+    sistemaControlarInicioAbastecimento(esp32, sd, abastecimento);
 
     /* CASO DE USO 4 - FINALIZAR ABASTECIMENTO*/
-    sistemaControlarFimAbastecimento(rtc, gps, abastecimento, esp32);
+    sistemaControlarFimAbastecimento(esp32, rtc, gps, abastecimento);
 
     /* CASO DE USO 5 - ARMAZENAR ABASTECIMENTO*/
-    sistemaControlarArmazenarAbastecimento(abastecimento);
+    sistemaControlarArmazenarAbastecimento(sd, abastecimento);
 
     /* CASO DE USO 6 - ENVIAR ABASTECIMENTO*/
     sistemaControlarEnviarAbastecimento(sim800L, abastecimento);
