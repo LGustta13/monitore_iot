@@ -71,7 +71,7 @@ void GprsServices::conectarNaRede(void)
 #endif
 }
 
-void GprsServices::requsicaoHttp(void)
+void GprsServices::requsicaoHttp(String token, String abastecimentosJson)
 {
   SerialMon.print(F("Performing HTTPS GET request... "));
   http.connectionKeepAlive(); // Currently, this is needed for HTTPS
@@ -111,12 +111,12 @@ void GprsServices::requsicaoHttp(void)
     SerialMon.println(F("The response is chunked"));
   }
 
-  String body = http.responseBody();
+  setBody(http.responseBody());
   SerialMon.println(F("Response:"));
-  SerialMon.println(body);
+  SerialMon.println(getBody());
 
   SerialMon.print(F("Body length is: "));
-  SerialMon.println(body.length());
+  SerialMon.println(getBody().length());
 
   http.stop();
   SerialMon.println(F("Server disconnected"));
@@ -127,6 +127,7 @@ void GprsServices::desconectarGprs(void)
 #if TINY_GSM_USE_GPRS
   modem.gprsDisconnect();
   SerialMon.println(F("GPRS disconnected"));
+  setBody("");
 #endif
 }
 
@@ -144,5 +145,10 @@ void GprsServices::updateDadosSerial(void)
 
 String GprsServices::getBody(void)
 {
-  return body;
+  return _body;
+}
+
+void GprsServices::setBody(String body)
+{
+  _body = body;
 }

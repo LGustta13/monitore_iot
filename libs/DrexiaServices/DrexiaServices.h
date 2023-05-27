@@ -44,6 +44,8 @@ public:
    */
   int getIdDoCartao(void);
 
+  void setIdDoCartao(int);
+
   /** Funcao que resgata o buffer do barramento 1-Wire
    * @param - void
    * @return - byte* _buffer_1wire, array com os dados do barramento 1wire

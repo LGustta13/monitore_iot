@@ -41,40 +41,40 @@ void AbastecimentoServices::setVolumeSaida(float volume)
 
 Localizacao AbastecimentoServices::getLocalizacaoBomba(void)
 {
-    return _gps;
+    return _localizacao;
 }
 
 void AbastecimentoServices::setLocalizacaoBomba(Localizacao localizacao)
 {
-    _gps = localizacao;
+    _localizacao = localizacao;
 }
 
-Data AbastecimentoServices::getDataInicial(void)
+String AbastecimentoServices::getDataInicial(void)
 {
     return _inicio_abastecimento;
 }
 
-void AbastecimentoServices::setDataInicial(Data data_inicial)
+void AbastecimentoServices::setDataInicial(String data_inicial)
 {
     _inicio_abastecimento = data_inicial;
 }
 
-Data AbastecimentoServices::getDataFinal(void)
+String AbastecimentoServices::getDataFinal(void)
 {
     return _fim_abastecimento;
 }
 
-void AbastecimentoServices::setDataFinal(Data data_final)
+void AbastecimentoServices::setDataFinal(String data_final)
 {
     _fim_abastecimento = data_final;
 }
 
-Identificacao AbastecimentoServices::getUsuarios(void)
+IdentificacaoServices AbastecimentoServices::getUsuarios(void)
 {
     return _usuarios;
 }
 
-void AbastecimentoServices::setUsuarios(Identificacao usuarios)
+void AbastecimentoServices::setUsuarios(IdentificacaoServices usuarios)
 {
     _usuarios = usuarios
 }

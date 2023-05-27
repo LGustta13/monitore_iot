@@ -38,6 +38,8 @@ public:
    */
   String getData(void);
 
+  String getDataHorario(void);
+
 private:
   RTC_DS1307 _rtc;
   String _horario;
