@@ -2,6 +2,7 @@ import fastify from "fastify"
 import cors from "@fastify/cors"
 import { driversRoutes } from "./routes/drivers"
 import { suppliesRoutes } from "./routes/supplies"
+import { vehiclesRoutes } from "./routes/vehicles"
 
 const app = fastify()
 app.register(cors, {
@@ -9,6 +10,7 @@ app.register(cors, {
 })
 
 app.register(driversRoutes)
+app.register(vehiclesRoutes)
 app.register(suppliesRoutes)
 
 app.listen({

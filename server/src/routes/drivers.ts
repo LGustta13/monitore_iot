@@ -1,19 +1,11 @@
 import { FastifyInstance } from 'fastify'
-import { z } from 'zod'
+import { preprocess, z } from 'zod'
 import { prisma } from '../lib/prisma'
-
-type driverProps = {
-  id: number,
-  nome: string,
-  rfid: string,
-  cadastro: Date,
-  veiculo: {}
-}
 
 export async function driversRoutes(app: FastifyInstance) {
 
   app.get('/drivers', async () => {
-    const drivers: driverProps[] = await prisma.driver.findMany({
+    const drivers = await prisma.driver.findMany({
       include: {
         veiculo: {
           select: {
@@ -48,29 +40,107 @@ export async function driversRoutes(app: FastifyInstance) {
 
     const { nome, rfid, ativado, placa } = bodySchema.parse(request.body)
 
-    const veiculoId = await prisma.vehicle.findFirst({
+    const veiculo = await prisma.vehicle.findFirst({
       where: {
         placa
       },
     })
 
-    const driver = await prisma.driver.create({
-      data: {
-        nome,
-        rfid,
-        ativado,
-        veiculoId: veiculoId.id
-      }
-    })
+    const driver = (veiculo) ? (
+      await prisma.driver.create({
+        data: {
+          nome,
+          rfid,
+          ativado,
+          veiculoId: veiculo.id
+        }
+      })
+    ) : (
+      await prisma.driver.create({
+        data: {
+          nome,
+          rfid,
+          ativado,
+        }
+      })
+    )
 
     return driver
   })
 
-  app.put('/drivers/:id', async () => {
+  app.put('/drivers/:id', async (request) => {
+    const paramsSchema = z.object({
+      id: z.preprocess(
+        (asNumber) => parseInt(z.string().parse(asNumber)),
+        z.number()
+      )
+    })
 
+    const { id } = paramsSchema.parse(request.params)
+
+    const bodySchema = z.object({
+      name: z.string(),
+      rfid: z.number(),
+      active: z.coerce.boolean().default(false),
+      placa: z.string(),
+    })
+
+    const { name, rfid, active, placa } = bodySchema.parse(request.body)
+
+    const veiculo = await prisma.vehicle.findFirst({
+      where: {
+        placa
+      }
+    })
+
+    let driver = await prisma.driver.findUniqueOrThrow({
+      where: {
+        id
+      }
+    })
+
+    driver = (veiculo) ? (
+      await prisma.driver.update({
+        where: {
+          id
+        },
+        data: {
+          nome: name,
+          rfid,
+          ativado: active,
+          veiculoId: veiculo.id
+        }
+      })
+    ) : (
+      await prisma.driver.update({
+        where: {
+          id
+        },
+        data: {
+          nome: name,
+          rfid,
+          ativado: active,
+        }
+      })
+    )
+
+    return driver
   })
 
-  app.delete('/drivers/:id', async () => {
+  app.delete('/drivers/:id', async (request) => {
+    const paramsSchema = z.object({
+      id: preprocess(
+        (asNumber) => parseInt(z.string().parse(asNumber)),
+        z.number()
+      )
+    })
 
+    const { id } = paramsSchema.parse(request.params)
+
+    await prisma.driver.delete({
+      where: {
+        id
+      }
+    })
   })
 }
