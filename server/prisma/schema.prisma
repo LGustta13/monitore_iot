@@ -1,0 +1,75 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Driver {
+  id       Int      @id @default(autoincrement())
+  nome     String
+  rfid     Int      @unique
+  ativado  Boolean  @default(false)
+  cadastro DateTime @default(now())
+
+  veiculo   Vehicle? @relation(fields: [veiculoId], references: [id])
+  veiculoId Int?     @unique
+
+  Supply Supply[]
+}
+
+model Vehicle {
+  id       Int      @id @default(autoincrement())
+  placa    String
+  rfid     Int      @unique
+  limite   Int
+  cadastro DateTime @default(now())
+  alterado DateTime @updatedAt
+  ativado  Boolean  @default(false)
+
+  motorista     Driver?
+  abastecimento Supply[]
+}
+
+model Attendant {
+  id       Int      @id @default(autoincrement())
+  nome     String
+  rfid     Int      @unique
+  ativado  Boolean  @default(false)
+  cadastro DateTime @default(now())
+
+  abastecimento Supply[]
+}
+
+model Supply {
+  id        Int      @id @default(autoincrement())
+  inicio    DateTime @default(now())
+  fim       DateTime @default(now())
+  dreno     Float    @default(0)
+  latitude  Float    @default(0)
+  longitude Float    @default(0)
+
+  tanque   Tank @relation(fields: [tanqueId], references: [id])
+  tanqueId Int
+
+  frentista   Attendant @relation(fields: [frentistaId], references: [id])
+  frentistaId Int
+
+  motorista   Driver @relation(fields: [motoristaId], references: [id])
+  motoristaId Int
+
+  veiculo   Vehicle @relation(fields: [veiculoId], references: [id])
+  veiculoId Int
+}
+
+model Tank {
+  id   Int    @id @unique
+  nome String
+
+  Supply Supply[]
+}
