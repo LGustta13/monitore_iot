@@ -3,12 +3,14 @@ import cors from "@fastify/cors"
 import { driversRoutes } from "./routes/drivers"
 import { suppliesRoutes } from "./routes/supplies"
 import { vehiclesRoutes } from "./routes/vehicles"
+import { authRoutes } from "./routes/auth"
 
 const app = fastify()
 app.register(cors, {
   origin: true,
 })
 
+app.register(authRoutes)
 app.register(driversRoutes)
 app.register(vehiclesRoutes)
 app.register(suppliesRoutes)
