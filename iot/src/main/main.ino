@@ -2,14 +2,7 @@
  *
  */
 
-#include "../libs/AtuadorServices/AtuadorServices.h"
-#include "../libs/DrexiaServices/DrexiaServices.h"
-#include "../libs/IdentificacaoServices/IdentificacaoServices.h"
-#include "../libs/RtcServices/RtcServices.h"
-#include "../libs/AbastecimentoServices/AbastecimentoServices.h"
-#include "../libs/GpsServices/GpsServices.h"
-#include "../libs/MicroSdServices/MicroSdServices.h"
-#include "../libs/GprsServices/GprsServices.h"
+#include "FuelPumpAutomation/src/FuelPumpAutomation.h"
 
 AtuadorServices esp32(13, -1, 4, -1, 32, 33, 27, 26);
 RtcServices rtc();
@@ -38,7 +31,7 @@ bool sistemaControlarEnviarAbastecimento(GprsServices &sim800L, MicroSdServices 
 }
 
 /* CASO DE USO 5 - ARMAZENAR ABASTECIMENTO*/
-bool sistemaControlarArmazenarAbastecimento(MicroSdServices &sd, AbastecimentoServices &abastecimento)
+bool sistemaControlarArmazenarAbastecimento(MicroSdServices &sd, Abastecimento &abastecimento)
 {
   const size_t capacidadeJson = JSON_OBJECT_SIZE(14);
   StaticJsonDocument<capacidadeJson> doc;
@@ -65,7 +58,7 @@ bool sistemaControlarArmazenarAbastecimento(MicroSdServices &sd, AbastecimentoSe
 }
 
 /* CASO DE USO 4 - FINALIZAR ABASTECIMENTO*/
-bool sistemaControlarFimAbastecimento(AtuadorServices &esp32, RtcServices &rtc, GpsServices &gps, AbastecimentoServices &abastecimento)
+bool sistemaControlarFimAbastecimento(AtuadorServices &esp32, RtcServices &rtc, GpsServices &gps, Abastecimento &abastecimento)
 {
   abastecimento.setDataFinal(rtc.getDataHorario());
   gps.handleLatitudeLongitude();
@@ -78,10 +71,10 @@ bool sistemaControlarFimAbastecimento(AtuadorServices &esp32, RtcServices &rtc, 
 }
 
 /* CASO DE USO 3 - INICIAR ABASTECIMENTO*/
-bool sistemaControlarInicioAbastecimento(AtuadorServices &esp32, MicroSdServices &sd, AbastecimentoServices &abastecimento)
+bool sistemaControlarInicioAbastecimento(AtuadorServices &esp32, MicroSdServices &sd, Abastecimento &abastecimento)
 {
   float volume_a_ser_abastecido = sd.volumeParaAbastecer(abastecimento.getUsuarios().getIdVeiculo());
-  esp32.atuarNoDisplay("Realize o abastecimento", 0);
+  esp32.atuarNoDisplay("Realize o abastecimento");
   abastecimento.setVolumeSaida(verificarPulsos(esp32, volume_a_ser_abastecido));
   esp32.atuarNoReleDeBloqueioZero(LOW);
   esp32.atuarNoBuzzer(50);
@@ -114,9 +107,9 @@ float verificarPulsos(AtuadorServices &esp32, float volume_a_ser_abastecido)
 }
 
 /* CASO DE USO 2 - GERAR ABASTECIMENTO*/
-AbastecimentoServices sistemaControlarAbastecimento(AtuadorServices &esp32, IdentificacaoServices &identificacao, RtcServices &rtc)
+AbastecimentoServices sistemaControlarAbastecimento(AtuadorServices &esp32, Identificacao &identificacao, RtcServices &rtc)
 {
-  AbastecimentoServices abastecimento();
+  Abastecimento abastecimento();
   abastecimento.setUsuarios(identificacao);
 
   rtc.handleDataHorarioAbastecimento();
@@ -129,9 +122,9 @@ AbastecimentoServices sistemaControlarAbastecimento(AtuadorServices &esp32, Iden
 }
 
 /* CASO DE USO 1 - ESPERAR IDENTIFICAÇÃO*/
-IdentificacaoServices sistemaControlarEsperarIdentificacao(AtuadorServices &esp32)
+Identificacao sistemaControlarEsperarIdentificacao(AtuadorServices &esp32)
 {
-  IdentificacaoServices identificacao();
+  Identificacao identificacao();
 
   byte comando_frentista = 0x00;
   byte comando_veiculo = 0x01;
@@ -161,19 +154,19 @@ void emitirAudio(byte comando, AtuadorServices &esp32)
   if (comando == 0x00)
   {
     esp32.atuarNoDisplay("Identificar frentista");
-    esp23.atuarNoBuzzer(50);
+    esp32.atuarNoBuzzer(50);
     // Identificar frentista no LCD
   }
   else if (comando == 0x01)
   {
     esp32.atuarNoDisplay("Identificar veiculo");
-    esp23.atuarNoBuzzer(50);
+    esp32.atuarNoBuzzer(50);
     // Identificar veículo no LCD
   }
   else if (comando == 0x02)
   {
     esp32.atuarNoDisplay("Identificar motorista");
-    esp23.atuarNoBuzzer(50);
+    esp32.atuarNoBuzzer(50);
     // Identificar motorista no LCD
   }
 }
@@ -197,7 +190,7 @@ int esperarIdentificacao(bool motorista_ou_veiculo, AtuadorServices &esp32)
       if (contador >= tempo_espera_limite)
       {
         return id_identificacao_osciosa;
-        esp32.atuarNoBizzer(50);
+        esp32.atuarNoBuzzer(50);
         // Mostrar no LCD para identificacao osciosa
       }
     }
@@ -210,7 +203,7 @@ int esperarIdentificacao(bool motorista_ou_veiculo, AtuadorServices &esp32)
 bool sistemaControlarInicializacao(AtuadorServices &esp32, GprsServices &sim800L)
 {
   esp32.atuarNoLedVerde(HIGH);
-  esp32.atuarNoDisplay("Sistema Iniciado", 0);
+  esp32.atuarNoDisplay("Sistema Iniciado");
 
   sim800L.inicializarGprs(); // Thread separada
   while (!sim800L.conectarNaRede())
@@ -233,10 +226,10 @@ void loop()
   if (statusInicializacao)
   {
     /* CASO DE USO 1 - ESPERAR IDENTIFICAÇÃO*/
-    IdentificacaoServices identificacao = sistemaControlarEsperarIdentificacao(esp32);
+    Identificacao identificacao = sistemaControlarEsperarIdentificacao(esp32);
 
     /* CASO DE USO 2 - GERAR ABASTECIMENTO*/
-    AbastecimentoServices abastecimento = sistemaControlarAbastecimento(esp32, identificacao, rtc);
+    Abastecimento abastecimento = sistemaControlarAbastecimento(esp32, identificacao, rtc);
 
     /* CASO DE USO 3 - INICIAR ABASTECIMENTO*/
     sistemaControlarInicioAbastecimento(esp32, sd, abastecimento);
