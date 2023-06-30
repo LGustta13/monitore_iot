@@ -6,9 +6,13 @@ export async function tanksRoutes(app: FastifyInstance) {
 
   app.get("/tanks", async (request, reply) => {
 
-    const tanques = await prisma.tank.findMany()
+    try {
+      const tanques = await prisma.tank.findMany()
+      reply.status(200).send(tanques)
 
-    reply.status(200).send(tanques)
+    } catch {
+      reply.send("NO TANK FOUND")
+    }
   })
 
   app.post("/tanks", async (request, reply) => {
@@ -27,23 +31,61 @@ export async function tanksRoutes(app: FastifyInstance) {
           nome,
         }
       })
-    } catch {
-      reply.status(500).send("NOT INSERTED")
-    }
 
-    reply.status(200).send("OK")
+      reply.status(200).send("OK")
+
+    } catch {
+      reply.send("NO TANK INSERTED")
+    }
   })
 
-  app.delete("/tanks", async (request, reply) => {
+  app.put("/tanks/:id", async (request, reply) => {
 
-    const querySchema = z.object({
+    const paramsSchema = z.object({
+      id: z.preprocess(
+        (asNumber) => parseInt(z.string().parse(asNumber)),
+        z.number()
+      )
+    })
+
+    const { id } = paramsSchema.parse(request.params)
+
+    const bodySchema = z.object({
+      idBody: z.number(),
+      nome: z.string()
+    })
+
+    const { idBody, nome } = bodySchema.parse(request.body)
+
+    console.log(id)
+
+    try {
+      const tanque = await prisma.tank.update({
+        where: {
+          id
+        },
+        data: {
+          id: idBody,
+          nome
+        }
+      })
+
+      reply.status(200).send(tanque)
+    } catch {
+      reply.send("TANK NOT UPDATED")
+    }
+  })
+
+  app.delete("/tanks/:id", async (request, reply) => {
+
+    const paramsSchema = z.object({
       id: preprocess(
         (asNumber) => parseInt(z.string().parse(asNumber)),
         z.number()
       )
     })
 
-    const { id } = querySchema.parse(request.query)
+    const { id } = paramsSchema.parse(request.params)
 
     try {
       await prisma.tank.delete({
@@ -55,7 +97,7 @@ export async function tanksRoutes(app: FastifyInstance) {
       reply.status(200).send("OK")
 
     } catch {
-      reply.status(500).send("NO DATA TO DELETE")
+      reply.send("TANK NOT DELETED")
     }
   })
 }

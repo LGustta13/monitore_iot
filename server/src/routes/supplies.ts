@@ -4,7 +4,7 @@ import { preprocess, z } from "zod"
 
 export async function suppliesRoutes(app: FastifyInstance) {
 
-  app.get('/supplies', async (request) => {
+  app.get('/supplies', async (request, reply) => {
 
     const querySchema = z.object({
       dataInicio: z.string(),
@@ -13,60 +13,64 @@ export async function suppliesRoutes(app: FastifyInstance) {
 
     const { dataInicio, dataFim } = querySchema.parse(request.query)
 
-    const supplies = await prisma.supply.findMany({
-      where: {
-        inicio: {
-          lte: new Date(dataFim),
-          gte: new Date(dataInicio)
+    try {
+      const abastecimentos = await prisma.supply.findMany({
+        where: {
+          inicio: {
+            lte: new Date(dataFim),
+            gte: new Date(dataInicio)
+          },
         },
-      },
 
-      include: {
-        tanque: {
-          select: {
-            nome: true
+        include: {
+          tanque: {
+            select: {
+              nome: true
+            }
+          },
+          frentista: {
+            select: {
+              nome: true
+            }
+          },
+          veiculo: {
+            select: {
+              placa: true
+            }
+          },
+          motorista: {
+            select: {
+              nome: true
+            }
           }
         },
-        frentista: {
-          select: {
-            nome: true
-          }
-        },
-        veiculo: {
-          select: {
-            placa: true
-          }
-        },
-        motorista: {
-          select: {
-            nome: true
-          }
+
+        orderBy: {
+          inicio: 'asc'
         }
-      },
+      })
 
-      orderBy: {
-        inicio: 'asc'
-      }
-    })
-
-    console.log(supplies)
-
-    return supplies.map(supply => {
-      return {
-        tanque: supply.tanque.nome,
-        frentista: supply.frentista.nome,
-        placa: supply.veiculo.placa,
-        motorista: supply.motorista.nome,
-        inicio: supply.inicio,
-        fim: supply.fim,
-        dreno: supply.dreno,
-        latitude: supply.latitude,
-        longitude: supply.longitude,
-      }
-    })
+      reply.status(200).send(
+        abastecimentos.map(abastecimento => {
+          return {
+            tanque: abastecimento.tanque.nome,
+            frentista: abastecimento.frentista.nome,
+            placa: abastecimento.veiculo.placa,
+            motorista: abastecimento.motorista.nome,
+            inicio: abastecimento.inicio,
+            fim: abastecimento.fim,
+            dreno: abastecimento.dreno,
+            latitude: abastecimento.latitude,
+            longitude: abastecimento.longitude,
+          }
+        })
+      )
+    } catch {
+      reply.send("NO SUPPLIES FOUND")
+    }
   })
 
-  app.post('/supplies', async (request) => {
+  app.post('/supplies', async (request, reply) => {
 
     const bodySchema = z.object({
       tanqueId: z.number(),
@@ -82,65 +86,60 @@ export async function suppliesRoutes(app: FastifyInstance) {
 
     const { tanqueId, frentistaRFID, veiculoRFID, motoristaRFID, inicio, fim, dreno, latitude, longitude } = bodySchema.parse(request.body)
 
-    const frentista = await prisma.attendant.findFirst({
-      where: {
-        rfid: frentistaRFID
-      }
-    })
+    try {
+      const frentista = await prisma.attendant.findFirst({
+        where: {
+          rfid: frentistaRFID
+        }
+      })
 
-    const motorista = await prisma.driver.findFirst({
-      where: {
-        rfid: motoristaRFID
-      }
-    })
+      const motorista = await prisma.driver.findFirst({
+        where: {
+          rfid: motoristaRFID
+        }
+      })
 
-    const veiculo = await prisma.vehicle.findFirst({
-      where: {
-        rfid: veiculoRFID
-      }
-    })
+      const veiculo = await prisma.vehicle.findFirst({
+        where: {
+          rfid: veiculoRFID
+        }
+      })
 
-    const supply = (frentista && veiculo && motorista) ? (
-      {
-        tanqueId,
-        frentistaId: frentista.id,
-        veiculoId: veiculo.id,
-        motoristaId: motorista.id,
-        inicio,
-        fim,
-        dreno,
-        latitude,
-        longitude
-      }
-    ) : (
-      {
-        tanqueId,
-        frentistaId: 0,
-        veiculoId: 0,
-        motoristaId: 0,
-        inicio,
-        fim,
-        dreno,
-        latitude,
-        longitude
-      }
-    )
+      if (frentista && motorista && veiculo) {
 
-    await prisma.supply.create({
-      data: supply
-    })
+        await prisma.supply.create({
+          data: {
+            tanqueId,
+            frentistaId: frentista.id,
+            veiculoId: veiculo.id,
+            motoristaId: motorista.id,
+            inicio,
+            fim,
+            dreno,
+            latitude,
+            longitude
+          }
+        })
+      }
+
+      reply.status(200).send("OK")
+
+    } catch {
+      reply.send("SUPPLY NOT CREATED")
+    }
+
   })
 
-  app.delete('/supplies', async (request, reply) => {
+  app.delete('/supplies/:id', async (request, reply) => {
 
-    const querySchema = z.object({
+    const paramsSchema = z.object({
       id: preprocess(
         (asNumber) => parseInt(z.string().parse(asNumber)),
         z.number()
       )
     })
 
-    const { id } = querySchema.parse(request.query)
+    const { id } = paramsSchema.parse(request.params)
 
     try {
       await prisma.supply.delete({
@@ -149,10 +148,10 @@ export async function suppliesRoutes(app: FastifyInstance) {
         }
       })
 
-      return reply.send("removed")
+      reply.status(200).send("OK")
 
     } catch {
-      reply.status(500).send("ID NOT FOUND")
+      reply.send("SUPPLY NOT DELETED")
     }
   })
 }
