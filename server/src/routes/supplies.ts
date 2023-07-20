@@ -53,6 +53,7 @@ export async function suppliesRoutes(app: FastifyInstance) {
       reply.status(200).send(
         abastecimentos.map(abastecimento => {
           return {
+            id: abastecimento.id,
             tanque: abastecimento.tanque.nome,
             frentista: abastecimento.frentista.nome,
             placa: abastecimento.veiculo.placa,

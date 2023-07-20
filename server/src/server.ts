@@ -6,6 +6,7 @@ import { vehiclesRoutes } from "./routes/vehicles"
 import { tanksRoutes } from "./routes/tanks"
 
 const app = fastify()
+
 app.register(cors, {
   origin: true,
 })
