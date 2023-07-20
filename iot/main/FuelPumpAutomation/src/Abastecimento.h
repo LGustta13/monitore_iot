@@ -6,8 +6,11 @@
 #ifndef ABASTECIMENTO_H
 #define ABASTECIMENTO_H
 
+#include <Arduino.h>
+
 #include "Localizacao.h"
 #include "Identificacao.h"
+#include "Data.h"
 
 class Abastecimento
 {
@@ -64,13 +67,13 @@ public:
    * @param - Localizacao localizacao: localizacao da bomba
    * @return - void
    */
-  void setLocalizacaoBomba(Localizacao localizacao);
+  void setLocalizacaoBomba(float latitude, float longitude);
 
   /** Pega a data inicial do abastecimento
    * @param - void
    * @return - Data data_inicial: data inicial do abastecimento
    */
-  String getDataInicial(void);
+  Data getDataInicial(void);
 
   /** Salva a data inicial do abastecimento
    * @param - Data data_inicial: data inicial do abastecimento
@@ -82,7 +85,7 @@ public:
    * @param - void
    * @return - Data data_final: data final do abastecimento
    */
-  String getDataFinal(void);
+  Data getDataFinal(void);
 
   /** Salva a data final do abastecimento
    * @param - Data data_final: data final do abastecimento
@@ -100,15 +103,15 @@ public:
    * @param - Identificacao usuario: usuarios do abastecimento
    * @return - void
    */
-  void setUsuarios(Identificacao usuarios);
+  void setUsuarios(int id_frentista, int id_veiculo, int id_motorista);
 
 private:
   int _id_tanque;
   String _nome_tanque;
   float _volume_saida;
   Localizacao _localizacao;
-  String _inicio_abastecimento;
-  String _fim_abastecimento;
+  Data _inicio_abastecimento;
+  Data _fim_abastecimento;
   Identificacao _usuarios;
 };
 

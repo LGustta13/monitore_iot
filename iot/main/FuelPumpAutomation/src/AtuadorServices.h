@@ -9,6 +9,7 @@
 #define ATUADORSERVICES_H
 
 #include <Arduino.h>
+#include <LiquidCrystal_I2C.h>
 
 class AtuadorServices
 {
@@ -24,7 +25,7 @@ public:
    *          int pino_led_azul
    * @return - void
    */
-  AtuadorServices(int bomba_gatilho_0, int bomba_gatilho_1, int pino_sensor_0, int pino_sensor_1, int pino_buzzer, int pino_led_verde, int pino_led_vermelho, int pino_led_azul);
+  AtuadorServices(int bomba_gatilho_0, int bomba_gatilho_1, int pino_buzzer, int pino_led_verde, int pino_led_vermelho, int pino_led_azul);
 
   /** Funcao que realiza o setup dos pinos
    * @param - void
@@ -73,17 +74,7 @@ public:
    */
   void atuarNoLedVerde(bool valor);
 
-  void atuarNoDisplay(String mensagem);
-
-  int receberPulsosDoGatilhoZero(void);
-
-  int receberPulsosDoGatilhoUm(void);
-
-  /** Função que reinicia o Arduino
-   * @param - void
-   * @return - void
-   */
-  void reiniciarArduino(void);
+  void atuarNoDisplay(String mensagem_linha1, String mensagem_linha2);
 
   /** Função que reinicia o Esp32
    * @param - void
@@ -94,13 +85,12 @@ public:
 private:
   int _bomba_gatilho_0;
   int _bomba_gatilho_1;
-  int _pino_sensor_0;
-  int _pino_sensor_1;
   int _pino_buzzer;
   int _pino_led_verde;
   int _pino_led_vermelho;
   int _pino_led_azul;
-  void (*_restart)(void);
+
+  LiquidCrystal_I2C _lcd;
 };
 
 #endif

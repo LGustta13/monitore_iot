@@ -8,11 +8,42 @@
 
 GprsServices::GprsServices(void)
 {
+  _apn = "simplepm.algar.br";
+  _gprsUser = "";
+  _gprsPass = "";
+  _server = "darwin-gps.com.br";
+  _resource = "/api/abastecimentos/getAbastecimentosInternoBomba.php?chave=4eef24c6b8248c2271f6663f44ec0de3c2535ca396a22cf60051137d71721309";
+
   setupGprs();
 }
 
 void GprsServices::setupGprs(void)
 {
+
+#define SerialMon Serial
+#define SerialAT Serial2
+#define TINY_GSM_RX_BUFFER 10000
+#define GSM_BAUD 9600
+#define TINY_GSM_USE_GPRS true
+#define DUMP_AT_COMMANDS
+
+#ifdef DUMP_AT_COMMANDS
+#include <StreamDebugger.h>
+  StreamDebugger debugger(SerialAT, SerialMon);
+  TinyGsm modem(debugger);
+#else
+  TinyGsm modem(SerialAT);
+#endif
+
+#ifdef USE_SSL &&defined TINY_GSM_MODEM_HAS_SSL
+  TinyGsmClientSecure client(modem);
+  const int port = 443;
+#else
+  TinyGsmClient client(modem);
+  const int port = 80;
+#endif
+
+  HttpClient http(client, server, port);
   SerialMon.begin(115200);
   delay(10);
   SerialAT.begin(115200);
@@ -36,14 +67,14 @@ void GprsServices::inicializarGprs(void)
 #endif
 }
 
-void GprsServices::conectarNaRede(void)
+bool GprsServices::conectarNaRede(void)
 {
   SerialMon.print("Waiting for network...");
   if (!modem.waitForNetwork())
   {
     SerialMon.println(" fail");
     delay(10000);
-    return;
+    return false;
   }
   SerialMon.println(" success");
 
@@ -60,7 +91,7 @@ void GprsServices::conectarNaRede(void)
   {
     SerialMon.println(" fail");
     delay(10000);
-    return;
+    return false;
   }
   SerialMon.println(" success");
 
@@ -69,9 +100,11 @@ void GprsServices::conectarNaRede(void)
     SerialMon.println("GPRS connected");
   }
 #endif
+
+  return true;
 }
 
-void GprsServices::requsicaoHttp(String token, String abastecimentosJson)
+void GprsServices::requisicaoHttp(String token, String abastecimentosJson)
 {
   SerialMon.print(F("Performing HTTPS GET request... "));
   http.connectionKeepAlive(); // Currently, this is needed for HTTPS
@@ -122,13 +155,15 @@ void GprsServices::requsicaoHttp(String token, String abastecimentosJson)
   SerialMon.println(F("Server disconnected"));
 }
 
-void GprsServices::desconectarGprs(void)
+bool GprsServices::desconectarGprs(void)
 {
 #if TINY_GSM_USE_GPRS
   modem.gprsDisconnect();
   SerialMon.println(F("GPRS disconnected"));
   setBody("");
 #endif
+
+  return true;
 }
 
 void GprsServices::updateDadosSerial(void)
@@ -151,4 +186,14 @@ String GprsServices::getBody(void)
 void GprsServices::setBody(String body)
 {
   _body = body;
+}
+
+String GprsServices::getToken(void)
+{
+  return _token;
+}
+
+void GprsServices::setToken(String token)
+{
+  _token = token;
 }

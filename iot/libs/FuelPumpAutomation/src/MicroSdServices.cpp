@@ -6,7 +6,7 @@
 
 #include "MicroSdServices.h"
 
-MicroSdServices::MicroSdServices(int pino_sd, const char *filename_abastecimentos, const char *filename_frentistas, const char *filename_veiculos, const_char *filename_motoristas)
+MicroSdServices::MicroSdServices(int pino_sd, const char *filename_abastecimentos, const char *filename_frentistas, const char *filename_veiculos, const char *filename_motoristas)
 {
   _filename = filename;
   _pino_moduloSD = pino;
@@ -86,7 +86,7 @@ String MicroSdServices::getAbastecimento(void)
   return abastecimentos
 }
 
-void MicroSdServices::setAbastecimento(String abastecimento_serial)
+bool MicroSdServices::setAbastecimento(String abastecimento_serial)
 {
   File file = SD.open(_filename);
 
@@ -107,7 +107,7 @@ void MicroSdServices::setAbastecimento(String abastecimento_serial)
   {
     Serial.print("Falha ao deserializar o JSON: ");
     Serial.println(error.c_str());
-    return;
+    return false;
   }
 
   // Append new element
@@ -136,8 +136,11 @@ void MicroSdServices::setAbastecimento(String abastecimento_serial)
   if (serializeJson(root, file) == 0)
   {
     Serial.println(F("Failed to write to file"));
+    return false;
   }
   file.close();
+
+  return true;
 }
 
 // Exibir os dados do arquivo
@@ -159,4 +162,8 @@ void MicroSdServices::printArquivo(void)
   Serial.println();
 
   file.close();
+}
+
+float MicroSdServices::volumeParaAbastecer(int id_veiculo)
+{
 }
