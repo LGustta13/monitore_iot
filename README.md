@@ -1,4 +1,5 @@
 <p align="center">
+  <img src=".assets/topologia.jpg" height="700">
   <h2 align="center">TCC - Repositório</h2>
   <p align="center">Solução baseada no kit de desenvolvimento ESP32 para automação de bombas de abastecimento de combustível em postos internos<p>
   
