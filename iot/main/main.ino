@@ -1,18 +1,24 @@
 /**
- *
+ *  Código principal, ou entidade controladora do sistema
+ *  Criado por: Luis Gustavo
+ *  Data: 14/07/2023
  */
 
 #include "FuelPumpAutomation/src/FuelPumpAutomation.h"
 
-AtuadorServices esp32(13, -1, 4, -1, 32, 33, 27, 26);
-RtcServices rtc();
-GpsServices gps();
-GprsServices sim800L();
+AtuadorServices esp32(14, -1, 13, 33, 27, 26);
+RtcServices rtc;
+GpsServices gps;
+GprsServices gprs("simplepm.algar.br", "", "", "", "");
 MicroSdServices sd(5, "Abastecimentos.txt", "Frentistas.txt", "Veiculos.txt", "Motoristas.txt");
+DrexiaServices drexia(25);
+PulserServices pulser(0, 0.005, 400, 4, -1);
 
-// Thread separada, pois é tarefa do sistema como autor
+Abastecimento *abastecimento;
+Identificacao *identificacao;
+
 /* CASO DE USO 6 - ENVIAR ABASTECIMENTO*/
-bool sistemaControlarEnviarAbastecimento(GprsServices &sim800L, MicroSdServices &sd)
+bool sistemaControlarEnviarAbastecimento()
 {
   String abastecimentosJson = sd.getAbastecimento();
 
@@ -31,7 +37,7 @@ bool sistemaControlarEnviarAbastecimento(GprsServices &sim800L, MicroSdServices 
 }
 
 /* CASO DE USO 5 - ARMAZENAR ABASTECIMENTO*/
-bool sistemaControlarArmazenarAbastecimento(MicroSdServices &sd, Abastecimento &abastecimento)
+bool sistemaControlarArmazenarAbastecimento()
 {
   const size_t capacidadeJson = JSON_OBJECT_SIZE(14);
   StaticJsonDocument<capacidadeJson> doc;
@@ -58,7 +64,7 @@ bool sistemaControlarArmazenarAbastecimento(MicroSdServices &sd, Abastecimento &
 }
 
 /* CASO DE USO 4 - FINALIZAR ABASTECIMENTO*/
-bool sistemaControlarFimAbastecimento(AtuadorServices &esp32, RtcServices &rtc, GpsServices &gps, Abastecimento &abastecimento)
+bool sistemaControlarFimAbastecimento()
 {
   abastecimento.setDataFinal(rtc.getDataHorario());
   gps.handleLatitudeLongitude();
@@ -71,43 +77,29 @@ bool sistemaControlarFimAbastecimento(AtuadorServices &esp32, RtcServices &rtc, 
 }
 
 /* CASO DE USO 3 - INICIAR ABASTECIMENTO*/
-bool sistemaControlarInicioAbastecimento(AtuadorServices &esp32, MicroSdServices &sd, Abastecimento &abastecimento)
+bool sistemaControlarInicioAbastecimento()
 {
-  float volume_a_ser_abastecido = sd.volumeParaAbastecer(abastecimento.getUsuarios().getIdVeiculo());
-  esp32.atuarNoDisplay("Realize o abastecimento");
-  abastecimento.setVolumeSaida(verificarPulsos(esp32, volume_a_ser_abastecido));
+  float volume_a_ser_abastecido = sd.buscarLimiteAbastecimento(abastecimento.getUsuarios().getIdVeiculo());
+
+  esp32.atuarNoDisplay("Realize o", "abastecimento");
+  esp32.atuarNoReleDeBloqueioZero(HIGH);
+
+  pulser = new PulserServices(volume_a_ser_abastecido, 0.005, 400, 4, -1);
+  pulser->handleContagemPulsos();
+  abastecimento.setVolumeSaida(pulser->getExtrato());
+
   esp32.atuarNoReleDeBloqueioZero(LOW);
   esp32.atuarNoBuzzer(50);
 
+  esp32.atuarNoDisplay("Extrato", String(pulser->getExtrato()));
+
+  delete pulser;
+  pulser = NULL;
   return true;
-}
-float verificarPulsos(AtuadorServices &esp32, float volume_a_ser_abastecido)
-{
-  float volume_abastecido = 0;
-  float litros_por_pulso = 0.2;
-  int count = 0;
-  bool flag_de_parada = false;
-
-  while (volume_abastecido <= volume_a_ser_abastecido)
-  {
-    if (esp32.receberPulsosDoGatilhoZero() > 0 and !flag_de_parada)
-    {
-      count++;
-      volume_abastecido = float(count) * litros_por_pulso;
-      flag_de_parada = true;
-    }
-
-    else if (esp32.receberPulsosDoGatilhoZero() == 0 and flag_de_parada)
-    {
-      flag_de_parada = false;
-    }
-  }
-
-  return volume_abastecido;
 }
 
 /* CASO DE USO 2 - GERAR ABASTECIMENTO*/
-AbastecimentoServices sistemaControlarAbastecimento(AtuadorServices &esp32, Identificacao &identificacao, RtcServices &rtc)
+bool sistemaControlarAbastecimento()
 {
   Abastecimento abastecimento();
   abastecimento.setUsuarios(identificacao);
@@ -122,9 +114,9 @@ AbastecimentoServices sistemaControlarAbastecimento(AtuadorServices &esp32, Iden
 }
 
 /* CASO DE USO 1 - ESPERAR IDENTIFICAÇÃO*/
-Identificacao sistemaControlarEsperarIdentificacao(AtuadorServices &esp32)
+bool sistemaControlarEsperarIdentificacao()
 {
-  Identificacao identificacao();
+  identificacao = new Identificacao();
 
   byte comando_frentista = 0x00;
   byte comando_veiculo = 0x01;
@@ -200,10 +192,10 @@ int esperarIdentificacao(bool motorista_ou_veiculo, AtuadorServices &esp32)
 }
 
 /* CASO DE USO 0 - INICIAR SISTEMA */
-bool sistemaControlarInicializacao(AtuadorServices &esp32, GprsServices &sim800L)
+bool sistemaControlarInicializacao()
 {
   esp32.atuarNoLedVerde(HIGH);
-  esp32.atuarNoDisplay("Sistema Iniciado");
+  esp32.atuarNoDisplay("Sistema", "Iniciado!");
 
   sim800L.inicializarGprs(); // Thread separada
   while (!sim800L.conectarNaRede())
