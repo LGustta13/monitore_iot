@@ -1,3 +1,7 @@
+/*
+  REVISÃO: (22/07) Necessita verificar as funcionalidades
+*/
+
 #include "MicroSdServices.h"
 
 MicroSdServices::MicroSdServices(int pino_sd, String filename_abastecimentos, String filename_frentistas, String filename_veiculos, String filename_motoristas)

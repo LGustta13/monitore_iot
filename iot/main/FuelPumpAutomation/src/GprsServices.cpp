@@ -1,3 +1,12 @@
+/*
+  DrexiaServices.cpp - Biblioteca para enviar sinais de comando
+  e auxiliar na identificação pelo Dréxia.
+  Criado pelo Luis Gustavo, 16 de Dezembro, 2022.
+  Atualização, 02 de Abril, 2023
+
+  REVISÃO: (22/07) Necessita verificar as funcionalidades
+*/
+
 #include "GprsServices.h"
 
 GprsServices::GprsServices(void)
