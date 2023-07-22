@@ -4,32 +4,40 @@ import { prisma } from '../lib/prisma'
 
 export async function driversRoutes(app: FastifyInstance) {
 
-  app.get('/drivers', async () => {
-    const drivers = await prisma.driver.findMany({
-      include: {
-        veiculo: {
-          select: {
-            placa: true
-          }
-        }
-      },
-      orderBy: {
-        cadastro: 'asc'
-      }
-    })
+  app.get('/drivers', async (request, reply) => {
 
-    return drivers.map((driver) => {
-      return {
-        id: driver.id,
-        name: driver.nome,
-        rfid: driver.rfid,
-        createdAt: driver.cadastro,
-        vehicle: driver.veiculo
-      }
-    })
+    try {
+      const drivers = await prisma.driver.findMany({
+        include: {
+          veiculo: {
+            select: {
+              placa: true
+            }
+          }
+        },
+        orderBy: {
+          cadastro: 'asc'
+        }
+      })
+
+      reply.status(200).send(
+        drivers.map(driver => {
+          return {
+            id: driver.id,
+            name: driver.nome,
+            rfid: driver.rfid,
+            createdAt: driver.cadastro,
+            vehicle: driver.veiculo?.placa
+          }
+        })
+      )
+
+    } catch {
+      reply.send("NO DRIVER FOUND")
+    }
   })
 
-  app.post('/drivers', async (request) => {
+  app.post('/drivers', async (request, reply) => {
 
     const bodySchema = z.object({
       nome: z.string(),
@@ -40,35 +48,30 @@ export async function driversRoutes(app: FastifyInstance) {
 
     const { nome, rfid, ativado, placa } = bodySchema.parse(request.body)
 
-    const veiculo = await prisma.vehicle.findFirst({
-      where: {
-        placa
-      },
-    })
+    try {
+      const veiculo = await prisma.vehicle.findFirst({
+        where: {
+          placa
+        },
+      })
 
-    const driver = (veiculo) ? (
       await prisma.driver.create({
         data: {
           nome,
           rfid,
           ativado,
-          veiculoId: veiculo.id
+          veiculoId: veiculo?.id
         }
       })
-    ) : (
-      await prisma.driver.create({
-        data: {
-          nome,
-          rfid,
-          ativado,
-        }
-      })
-    )
 
-    return driver
+      reply.status(200).send("OK")
+
+    } catch {
+      reply.send("NO DRIVER CREATED")
+    }
   })
 
-  app.put('/drivers/:id', async (request) => {
+  app.put('/drivers/:id', async (request, reply) => {
     const paramsSchema = z.object({
       id: z.preprocess(
         (asNumber) => parseInt(z.string().parse(asNumber)),
@@ -87,19 +90,19 @@ export async function driversRoutes(app: FastifyInstance) {
 
     const { name, rfid, active, placa } = bodySchema.parse(request.body)
 
-    const veiculo = await prisma.vehicle.findFirst({
-      where: {
-        placa
-      }
-    })
+    try {
+      const veiculo = await prisma.vehicle.findFirst({
+        where: {
+          placa
+        }
+      })
 
-    let driver = await prisma.driver.findUniqueOrThrow({
-      where: {
-        id
-      }
-    })
+      await prisma.driver.findUniqueOrThrow({
+        where: {
+          id
+        }
+      })
 
-    driver = (veiculo) ? (
       await prisma.driver.update({
         where: {
           id
@@ -108,26 +111,19 @@ export async function driversRoutes(app: FastifyInstance) {
           nome: name,
           rfid,
           ativado: active,
-          veiculoId: veiculo.id
+          veiculoId: veiculo?.id
         }
-      })
-    ) : (
-      await prisma.driver.update({
-        where: {
-          id
-        },
-        data: {
-          nome: name,
-          rfid,
-          ativado: active,
-        }
-      })
-    )
+      }),
 
-    return driver
+        reply.status(200).send("OK")
+
+    } catch {
+      reply.send("DRIVER NOT UPDATED")
+    }
   })
 
-  app.delete('/drivers/:id', async (request) => {
+  app.delete('/drivers/:id', async (request, reply) => {
+
     const paramsSchema = z.object({
       id: preprocess(
         (asNumber) => parseInt(z.string().parse(asNumber)),
@@ -137,10 +133,17 @@ export async function driversRoutes(app: FastifyInstance) {
 
     const { id } = paramsSchema.parse(request.params)
 
-    await prisma.driver.delete({
-      where: {
-        id
-      }
-    })
+    try {
+      await prisma.driver.delete({
+        where: {
+          id
+        }
+      })
+
+      reply.status(200).send("OK")
+
+    } catch {
+      reply.send("DRIVER NOT DELETED")
+    }
   })
 }

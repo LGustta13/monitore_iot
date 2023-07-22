@@ -3,8 +3,10 @@ import cors from "@fastify/cors"
 import { driversRoutes } from "./routes/drivers"
 import { suppliesRoutes } from "./routes/supplies"
 import { vehiclesRoutes } from "./routes/vehicles"
+import { tanksRoutes } from "./routes/tanks"
 
 const app = fastify()
+
 app.register(cors, {
   origin: true,
 })
@@ -12,6 +14,7 @@ app.register(cors, {
 app.register(driversRoutes)
 app.register(vehiclesRoutes)
 app.register(suppliesRoutes)
+app.register(tanksRoutes)
 
 app.listen({
   port: process.env.PORT ? Number(process.env.PORT) : 3333,
