@@ -11,7 +11,6 @@ Identificacao::Identificacao()
   _id_frentista = 0;
   _id_veiculo = 0;
   _id_motorista = 0;
-  _id_usuario = "frentista";
 }
 
 int Identificacao::getIdFrentista(void)
@@ -42,14 +41,4 @@ int Identificacao::getIdMotorista(void)
 void Identificacao::setIdMotorista(int id)
 {
   _id_motorista = id;
-}
-
-String Identificacao::getIdUsuario(void)
-{
-  return _id_usuario;
-}
-
-void Identificacao::setIdUsuario(String nome)
-{
-  _id_usuario = nome;
 }

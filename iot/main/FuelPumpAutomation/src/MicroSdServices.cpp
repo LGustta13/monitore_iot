@@ -1,17 +1,14 @@
-/*
-  MicroSdServices.cpp - Biblioteca para ler e escrever dados
-  no módulo do cartão microSD.
-  Criado pelo Luis Gustavo, 15 de Março, 2023.
-*/
-
 #include "MicroSdServices.h"
 
-MicroSdServices::MicroSdServices(int pino_sd, const char *filename_abastecimentos, const char *filename_frentistas, const char *filename_veiculos, const char *filename_motoristas)
+MicroSdServices::MicroSdServices(int pino_sd, String filename_abastecimentos, String filename_frentistas, String filename_veiculos, String filename_motoristas)
 {
-  _filename = filename;
-  _pino_moduloSD = pino;
-  _quantidadeDeAbastecimentos = 5;
-  _bytesAbastecimentos = 380;
+  _file_abastecimentos = filename_abastecimentos;
+  _file_frentistas = filename_frentistas;
+  _file_motoristas = filename_motoristas;
+  _file_veiculos = filename_veiculos;
+  _pino_moduloSD = pino_sd;
+  _quantidade_abastecimentos = 0;
+
   inicializarMicroSd();
 }
 
@@ -19,55 +16,34 @@ void MicroSdServices::inicializarMicroSd(void)
 {
   if (!SD.begin(_pino_moduloSD))
   {
-    Serial.println("Card Mount Failed");
     return;
   }
   uint8_t cardType = SD.cardType();
 
   if (cardType == CARD_NONE)
   {
-    Serial.println("No SD card attached");
     return;
-  }
-
-  Serial.print("SD Card Type: ");
-  if (cardType == CARD_MMC)
-  {
-    Serial.println("MMC");
-  }
-  else if (cardType == CARD_SD)
-  {
-    Serial.println("SDSC");
-  }
-  else if (cardType == CARD_SDHC)
-  {
-    Serial.println("SDHC");
-  }
-  else
-  {
-    Serial.println("UNKNOWN");
   }
 
   uint64_t cardSize = SD.cardSize() / (1024 * 1024);
   Serial.printf("SD Card Size: %lluMB\n", cardSize);
 }
 
-String MicroSdServices::getAbastecimento(void)
+String MicroSdServices::acessarAbastecimentos(void)
 {
   String abastecimentos = "";
 
-  if (SD.exists(_filename))
+  if (SD.exists(_file_abastecimentos))
   {
-    File file = SD.open(_filename);
+    File file = SD.open(_file_abastecimentos);
 
     if (!file)
     {
-      Serial.println(F("Failed to read file"));
+      Serial.println(F("Falha ao ler arquivo"));
     }
     else
     {
 
-      // Extract each characters by one by one
       while (file.available())
       {
         abastecimentos = file.readString();
@@ -86,11 +62,110 @@ String MicroSdServices::getAbastecimento(void)
   return abastecimentos
 }
 
-bool MicroSdServices::setAbastecimento(String abastecimento_serial)
+String MicroSdServices::acessarFrentistas(void)
 {
-  File file = SD.open(_filename);
+  String frentistas = "";
 
-  StaticJsonDocument<(quantidadeDeAbastecimentos * bytesAbastecimentos) + 2> root;
+  if (SD.exists(_file_frentistas))
+  {
+    File file = SD.open(_file_frentistas);
+
+    if (!file)
+    {
+      Serial.println(F("Falha ao ler arquivo"));
+    }
+    else
+    {
+
+      while (file.available())
+      {
+        frentistas = file.readString();
+        file.close();
+      }
+
+      Serial.println("Conteúdo do arquivo");
+      Serial.println(frentistas);
+    }
+  }
+  else
+  {
+    Serial.println("O arquivo não existe!");
+  }
+
+  return frentistas
+}
+
+String MicroSdServices::acessarMotoristas(void)
+{
+  String motoristas = "";
+
+  if (SD.exists(_file_motoristas))
+  {
+    File file = SD.open(_file_motoristas);
+
+    if (!file)
+    {
+      Serial.println(F("Falha ao ler arquivo"));
+    }
+    else
+    {
+
+      while (file.available())
+      {
+        motoristas = file.readString();
+        file.close();
+      }
+
+      Serial.println("Conteúdo do arquivo");
+      Serial.println(motoristas);
+    }
+  }
+  else
+  {
+    Serial.println("O arquivo não existe!");
+  }
+
+  return motoristas
+}
+
+String MicroSdServices::acessarVeiculos(void)
+{
+  String veiculos = "";
+
+  if (SD.exists(_file_veiculos))
+  {
+    File file = SD.open(_file_veiculos);
+
+    if (!file)
+    {
+      Serial.println(F("Falha ao ler arquivo"));
+    }
+    else
+    {
+
+      while (file.available())
+      {
+        veiculos = file.readString();
+        file.close();
+      }
+
+      Serial.println("Conteúdo do arquivo");
+      Serial.println(veiculos);
+    }
+  }
+  else
+  {
+    Serial.println("O arquivo não existe!");
+  }
+
+  return veiculos
+}
+
+void MicroSdServices::salvarAbastecimento(String abastecimento_serial)
+{
+  File file = SD.open(_file_abastecimentos);
+
+  StaticJsonDocument<(_quantidade_abastecimentos * 800) + 2> root;
 
   DeserializationError error = deserializeJson(root, file);
   if (error)
@@ -107,15 +182,14 @@ bool MicroSdServices::setAbastecimento(String abastecimento_serial)
   {
     Serial.print("Falha ao deserializar o JSON: ");
     Serial.println(error.c_str());
-    return false;
+    return;
   }
 
-  // Append new element
   JsonObject obj = root.createNestedObject();
   obj["tank_id"] = doc["id"];
   obj["tank_name"] = doc["nome_bomba"];
-  obj["initial_volume"] = doc["latitude"];
-  obj["final_volume"] = doc["longitude"];
+  obj["latitide"] = doc["latitude"];
+  obj["longitude"] = doc["longitude"];
   obj["drain_value"] = doc["volume_abastecido"];
 
   JsonObject utc_initial_date_time = obj.createNestedObject("utc_initial_date_time");
@@ -132,38 +206,15 @@ bool MicroSdServices::setAbastecimento(String abastecimento_serial)
   obj["ident_veiculo"] = doc["id_veiculo"];
   obj["ident_motorista"] = doc["id_motorista"];
 
-  file = SD.open(_filename, FILE_WRITE);
+  file = SD.open(_file_abastecimentos, FILE_WRITE);
   if (serializeJson(root, file) == 0)
   {
-    Serial.println(F("Failed to write to file"));
-    return false;
-  }
-  file.close();
-
-  return true;
-}
-
-// Exibir os dados do arquivo
-void MicroSdServices::printArquivo(void)
-{
-
-  File file = SD.open(_filename);
-  if (!file)
-  {
-    Serial.println(F("Failed to read file"));
+    Serial.println(F("Falha ao escrever no arquivo"));
     return;
   }
-
-  // Extract each characters by one by one
-  while (file.available())
-  {
-    Serial.print((char)file.read());
-  }
-  Serial.println();
-
   file.close();
 }
 
-float MicroSdServices::volumeParaAbastecer(int id_veiculo)
+float MicroSdServices::buscarLimiteAbastecimento(int id_veiculo)
 {
 }

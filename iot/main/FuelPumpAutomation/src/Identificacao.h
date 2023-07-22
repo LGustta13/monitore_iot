@@ -54,23 +54,10 @@ public:
    */
   void setIdVeiculo(int id);
 
-  /** Retorna o nome do último usuário identificado
-   * @param - void
-   * @return - int id: nome do usuário
-   */
-  String getIdUsuario(void);
-
-  /** Salva o nome do último usuário identificado
-   * @param - int id: nome do usuário
-   * @return - void
-   */
-  void setIdUsuario(String nome);
-
 private:
   int _id_frentista;
   int _id_motorista;
   int _id_veiculo;
-  String _id_usuario;
 };
 
 #endif

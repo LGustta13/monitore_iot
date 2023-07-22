@@ -1,0 +1,28 @@
+#######################################
+# Syntax Coloring Map
+#######################################
+
+#######################################
+# Datatypes (KEYWORD1)
+#######################################
+
+AbastecimentoServices KEYWORD1
+
+#######################################
+# Methods and Functions (KEYWORD2)
+#######################################
+
+getIdTanque KEYWORD2
+setIdTanque KEYWORD2
+getNomeTanque   KEYWORD2
+setNomeTanque   KEYWORD2
+getVolumeSaida  KEYWORD2
+setVolumeSaida  KEYWORD2
+getLocalizacaoBomba KEYWORD2
+setLocalizacaoBomba KEYWORD2
+getDataInicial  KEYWORD2
+setDataInicial  KEYWORD2
+getDataFinal    KEYWORD2
+setDataFinal    KEYWORD2
+getUsuarios KEYWORD2
+setUsuarios KEYWORD2

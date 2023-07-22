@@ -47,9 +47,22 @@ public:
 
   void setIdDoCartao(int);
 
+  /** Retorna o nome do último usuário identificado
+   * @param - void
+   * @return - int id: nome do usuário
+   */
+  String getIdUsuario(void);
+
+  /** Salva o nome do último usuário identificado
+   * @param - int id: nome do usuário
+   * @return - void
+   */
+  void setIdUsuario(String nome);
+
 private:
   int _pino_one_wire;
   int _id_do_cartao;
+  String _usuario;
   OneWire _barramento_drexia;
 };
 

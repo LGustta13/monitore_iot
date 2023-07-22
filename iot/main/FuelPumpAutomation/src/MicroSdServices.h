@@ -18,31 +18,28 @@
 class MicroSdServices
 {
 public:
-  MicroSdServices(int pino_sd, const char *filename_abastecimentos, const char *filename_frentistas, const char *filename_veiculos, const char *filename_motoristas);
+  MicroSdServices(int pino_sd, String filename_abastecimentos, String filename_frentistas, String filename_veiculos, String filename_motoristas);
 
   void inicializarMicroSd(void);
 
-  /** Funcao que realiza o setup do módulo microSD
-   * @param - void
-   * @return - void
-   */
-  String getAbastecimento(void);
+  String acessarAbastecimentos(void);
 
-  /** Acessa os abastecimentos e salva em uma variável
-   * @param -void
-   * @return - String anastecimentos: abastecimentos
-   */
-  bool setAbastecimento(String abastecimento_serial);
+  String acessarFrentistas(void);
 
-  void printArquivo(void);
+  String acessarMotoristas(void);
 
-  float volumeParaAbastecer(int id_veiculo);
+  String acessarVeiculos(void);
+
+  void salvarAbastecimento(String abastecimento_serial);
+
+  float buscarLimiteAbastecimento(int id_veiculo);
 
 private:
-  String _abastecimento_serial;
-  const char *_filename;
-  int _quantidadeDeAbastecimentos;
-  int _bytesAbastecimentos;
+  String _file_abastecimentos;
+  String _file_frentistas;
+  String _file_motoristas;
+  String _file_veiculos;
+  int _quantidade_abastecimentos;
   int _pino_moduloSD;
 };
 
