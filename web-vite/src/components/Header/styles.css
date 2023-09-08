@@ -1,0 +1,21 @@
+header {
+  position: fixed;
+  background: var(--bg-header-color);
+  width: 100%;
+  height: 5rem;
+  padding: 0.5rem 5rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+header h1 {
+  color: var(--header-text-color);
+}
+
+header .header-icon {
+  position: absolute;
+  left: 1.5rem;
+  font-size: 2rem;
+  color: var(--header-text-color);
+}

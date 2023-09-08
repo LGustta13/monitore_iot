@@ -1,0 +1,15 @@
+.header-user {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.header-user p {
+  color: var(--header-text-color);
+}
+
+.header-user img {
+  width: 4rem;
+  border-radius: 50%;
+  border: 0.1rem solid #fff;
+}

@@ -1,0 +1,23 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  scroll-behavior: smooth;
+  text-decoration: none;
+  border: none;
+  outline: none;
+  font-family: "Poppins", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  list-style: none;
+}
+
+#root {
+  --bg-color: #605f5f;
+  --header-text-color: #fff;
+  --text-color: #000;
+  --bg-sidebar-color: #138f5b;
+  --bg-header-color: #2fb57d;
+  --card-color: #e5dfdf;
+  --table-color-one: #dcdcdc;
+  --table-color-two: #c0c0c0;
+}
