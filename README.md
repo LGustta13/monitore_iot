@@ -4,7 +4,7 @@
   <p align="center">Solução baseada no kit de desenvolvimento ESP32 para automação de bombas de abastecimento de combustível em postos internos</p>
   <p align="center">Desenvolvido durante meu Trabalho de Conclusão de Curso</p>
   <p align="center">
-    <a href="https://drive.google.com/file/d/1FqV_F_vm_5pQEgPEcDSI5t4S6yIWn7tD/view?usp=sharing">
+    <a href="https://drive.google.com/file/d/1fJzazAKdgJbHsF8TJt_9n712rZ6LjsRO/view?usp=sharing">
     	<img src="https://img.shields.io/badge/-Monografia-lightgrey"/>
     </a>
   </p>
