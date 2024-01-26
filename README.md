@@ -8,7 +8,7 @@ Solução baseada no kit de desenvolvimento ESP32 para automação de bombas de 
 <br>
 
 <p align="center">
-  <img alt="Monitore IOT" src=".github/preview.jpg" width="100%">
+  <img alt="Monitore IOT" src=".github/preview.jpg" width="30%">
 </p>
 <p align="center">
     <a href="https://drive.google.com/file/d/1fJzazAKdgJbHsF8TJt_9n712rZ6LjsRO/view?usp=sharing">
