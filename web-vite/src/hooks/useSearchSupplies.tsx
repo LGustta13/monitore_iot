@@ -15,7 +15,7 @@ type SearchContextProviderProps = {
 }
 
 type SearchContextDataProps = {
-    handleSearchDataByDate: (initial: string, final: string) => void,
+    handleSearchDataByDate: (initial: Date | null, final: Date | null) => void,
     supplies: SupplyProps[]
 }
 
@@ -25,14 +25,16 @@ export function SearchContextProvider({ children }: SearchContextProviderProps) 
 
     const [supplies, setSupplies] = useState<SupplyProps[]>([])
 
-    async function handleSearchDataByDate(initial: string, final: string) {
+    async function handleSearchDataByDate(initial: Date | null, final: Date | null) {
         let response = null;
+        const initialDate = initial?.toString();
+        const finalDate = final?.toString();
 
         if(!initial || !final) {
             response = await fetch(`http://localhost:5173/api/supplies`)
             
         } else {
-            response = await fetch(`http://localhost:5173/api/supplies/${initial}/${final}`)
+            response = await fetch(`http://localhost:5173/api/supplies/${initialDate}/${finalDate}`)
         }
         
         const data = await response.json()

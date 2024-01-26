@@ -12,7 +12,6 @@ import { createServer } from 'miragejs'
 import { SearchContextProvider } from './hooks/useSearchSupplies'
 import { RoutesContextProvider } from './hooks/useRoutes'
 
-
 type SupplyProps = {
   id: number,
   tank: string,
@@ -51,9 +50,15 @@ createServer({
       const start = new Date(request.params.initial);
       const end = new Date(request.params.final);
 
+      
+
       let inDateSupplies: SupplyProps[] = [];
 
       supplies.map((supply) => {
+        console.log(start);
+        console.log(end);
+        console.log(supply.date);
+
         if(supply.date >= start && supply.date <= end) {
           inDateSupplies.push(supply);
         }
