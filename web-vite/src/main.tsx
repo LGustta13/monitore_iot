@@ -1,32 +1,78 @@
-import React from 'react'
+import React, { } from 'react'
 import ReactDOM from 'react-dom/client'
+
+// Componentes
 import Home from './pages/Home'
+
+// Estilos
 import './styles/global.css'
+
+// Libs
 import { createServer } from 'miragejs'
+import { SearchContextProvider } from './hooks/useSearchSupplies'
+import { RoutesContextProvider } from './hooks/useRoutes'
+
+
+type SupplyProps = {
+  id: number,
+  tank: string,
+  date: Date,
+  amount: number,
+  attendant: string,
+  plate: string,
+  driver: string,
+}
 
 createServer({
 
   routes() {
-    this.namespace = "api"
+    this.namespace = "api";
+
+    let supplies: SupplyProps[] = [];
+    const length = 8;
+
+    for (let i = 1; i < length; i++) {
+      supplies.push({
+        id: i,
+        tank: `Tanque ${i}`,
+        date: new Date(),
+        amount: Math.floor(Math.random() * (20 - 1 + 1)) + 1,
+        attendant: "Luis Gustavo",
+        plate: "ABC1234",
+        driver: "Oliveira"
+      })
+    }
 
     this.get("/supplies", () => {
-      return (
-        [
-          { id: 1, tank: "Tanque 1", date: "12/12/1998", amount: 2, attendant: "Luis Gustavo de Souza Oliveira", plate: "ABC1234", driver: "Luis Gustavo de Souza Oliveira" },
-          { id: 2, tank: "Tanque 1", date: "12/12/1998", amount: 2, attendant: "Luis Gustavo de Souza Oliveira", plate: "ABC1234", driver: "Luis Gustavo de Souza Oliveira" },
-          { id: 3, tank: "Tanque 1", date: "12/12/1998", amount: 2, attendant: "Luis Gustavo de Souza Oliveira", plate: "ABC1234", driver: "Luis Gustavo de Souza Oliveira" },
-          { id: 4, tank: "Tanque 1", date: "12/12/1998", amount: 2, attendant: "Luis Gustavo de Souza Oliveira", plate: "ABC1234", driver: "Luis Gustavo de Souza Oliveira" },
-          { id: 5, tank: "Tanque 1", date: "12/12/1998", amount: 2, attendant: "Luis Gustavo de Souza Oliveira", plate: "ABC1234", driver: "Luis Gustavo de Souza Oliveira" },
-          { id: 6, tank: "Tanque 1", date: "12/12/1998", amount: 2, attendant: "Luis Gustavo de Souza Oliveira", plate: "ABC1234", driver: "Luis Gustavo de Souza Oliveira" },
-          { id: 7, tank: "Tanque 1", date: "12/12/1998", amount: 2, attendant: "Luis Gustavo de Souza Oliveira", plate: "ABC1234", driver: "Luis Gustavo de Souza Oliveira" }
-        ]
-      )
+      return supplies;
+    })
+
+    this.get("/supplies/:initial/:final", (response, request) => {
+      const start = new Date(request.params.initial);
+      const end = new Date(request.params.final);
+
+      let inDateSupplies: SupplyProps[] = [];
+
+      supplies.map((supply) => {
+        if(supply.date >= start && supply.date <= end) {
+          inDateSupplies.push(supply);
+        }
+      })
+
+      return inDateSupplies;
     })
   }
 })
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
+
   <React.StrictMode>
-    <Home />
+    <RoutesContextProvider>
+      <SearchContextProvider>
+        <Home />
+      </SearchContextProvider>
+    </RoutesContextProvider >
   </React.StrictMode>,
+
+
 )

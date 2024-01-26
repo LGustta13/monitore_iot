@@ -1,26 +1,28 @@
 
 import { FormEvent, useState } from 'react'
 import './styles.css'
+import { useSearchSupplies } from '../../hooks/useSearchSupplies'
+import { useRoutes } from '../../hooks/useRoutes'
 
 type ActiveProps = {
-  onSearchData: (initialDate: string, finalDate: string) => void
   active: boolean
 }
 
 export default function SideBar(props: ActiveProps) {
-  const { active, onSearchData } = props
+  const { active } = props
   const [initialDate, setInitialDate] = useState('')
   const [finalDate, setFinalDate] = useState('')
+
+  const {handleSearchDataByDate} = useSearchSupplies();
+  const {setRoute} = useRoutes();
 
   function handleFormSubmit(e: FormEvent) {
     e.preventDefault()
 
-    onSearchData(initialDate, finalDate)
+    handleSearchDataByDate(initialDate, finalDate);
     setInitialDate('')
     setFinalDate('')
   }
-
-
 
   return (
     <nav className={`${active ? "active" : ""}`}>
@@ -43,8 +45,8 @@ export default function SideBar(props: ActiveProps) {
       </form>
 
       <div className="sidebar-nav">
-        <button className="btn">Listagem</button>
-        <button className="btn">Dashboard</button>
+        <button className="btn" onClick={() => setRoute("/Home")}>Listagem</button>
+        <button className="btn" onClick={() => setRoute("/Dash")}>Dashboard</button>
       </div>
 
     </nav>
