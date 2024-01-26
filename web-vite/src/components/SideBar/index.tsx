@@ -35,8 +35,9 @@ export default function SideBar(props: ActiveProps) {
           selected={initialDate}
           onChange={(date) => setInitialDate(date)}
           locale="pt-BR"
-          placeholderText="Selecione uma data de início"
+          placeholderText="Data Inicial"
           withPortal
+          isClearable
           dateFormat="Pp"
           showYearDropdown
           yearDropdownItemNumber={5}
@@ -44,13 +45,16 @@ export default function SideBar(props: ActiveProps) {
           showTimeSelect
           timeFormat="p"
           timeIntervals={15}
+          className='datePicker'
+          clearButtonClassName='clearIcon'
         />
         <DatePicker
           selected={finalDate}
           onChange={(date) => setFinalDate(date)}
           locale="pt-BR"
-          placeholderText="Selecione uma data de fim"
+          placeholderText="Data Final"
           withPortal
+          isClearable
           dateFormat="Pp"
           showYearDropdown
           yearDropdownItemNumber={5}
@@ -58,6 +62,7 @@ export default function SideBar(props: ActiveProps) {
           showTimeSelect
           timeFormat="p"
           timeIntervals={15}
+          className='datePicker'
         />
         <button type='submit' className='btn'>Consultar</button>
       </form>

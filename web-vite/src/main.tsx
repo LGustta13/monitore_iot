@@ -34,7 +34,7 @@ createServer({
       supplies.push({
         id: i,
         tank: `Tanque ${i}`,
-        date: new Date(),
+        date: new Date(Math.floor(Math.random() * (Date.now() - 1704100000000 + 1)) + 1704100000000),
         amount: Math.floor(Math.random() * (20 - 1 + 1)) + 1,
         attendant: "Luis Gustavo",
         plate: "ABC1234",
