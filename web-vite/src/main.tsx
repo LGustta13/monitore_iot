@@ -46,7 +46,7 @@ createServer({
       return supplies;
     })
 
-    this.get("/supplies/:initial/:final", (response, request) => {
+    this.get("/supplies/:initial/:final", (_response, request) => {
       const start = new Date(request.params.initial);
       const end = new Date(request.params.final);
 
